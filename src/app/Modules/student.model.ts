@@ -1,8 +1,8 @@
-import { Schema, model, connect } from 'mongoose';
+import { Schema, model } from 'mongoose';
 import {
   Guardian,
   LocalGuardian,
-  Student,
+  StudentType,
   UserName,
 } from './Students/student.interface';
 
@@ -59,7 +59,7 @@ const LocalGuardianSchema = new Schema<LocalGuardian>({
   },
 });
 
-const StudentSchema = new Schema<Student>({
+const StudentSchema = new Schema<StudentType>({
   id: { type: String },
   name: UserNameSchema,
   //   this is called Enum type in Mongoose => this is only used for predefined property that will never gonna change
@@ -83,4 +83,4 @@ const StudentSchema = new Schema<Student>({
 // 3. Create a Model.
 // const User = model<IUser>('User', userSchema);
 
-const Student = model<Student>('Student', StudentSchema);
+export const StudentModel = model<StudentType>('Student', StudentSchema);

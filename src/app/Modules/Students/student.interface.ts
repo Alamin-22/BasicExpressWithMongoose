@@ -37,7 +37,7 @@ export type LocalGuardian = {
 };
 
 // 1. Create an interface representing a document in MongoDB.
-export interface Student {
+export interface StudentType {
   id: string;
   name: UserName;
   email: string;
@@ -53,6 +53,5 @@ export interface Student {
   profileImg?: string;
   isActive: 'Active' | 'InActive';
 }
-
 
 // 2. Create a Schema corresponding to the document interface.
