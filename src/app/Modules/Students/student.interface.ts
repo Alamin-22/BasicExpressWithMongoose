@@ -1,4 +1,3 @@
-import { Schema, model, connect } from 'mongoose';
 
 // Guardian Type
 export type Guardian = {
