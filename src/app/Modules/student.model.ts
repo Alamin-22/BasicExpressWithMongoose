@@ -86,67 +86,81 @@ const LocalGuardianSchema = new Schema<TLocalGuardian>({
   },
 });
 
-const StudentSchema = new Schema<TStudentType, StudentModel>({
-  id: { type: String, required: true, unique: true },
-  name: {
-    type: UserNameSchema,
-    required: true,
-  },
-
-  //   this is called Enum type in Mongoose => this is only used for predefined property that will never gonna change
-  gender: {
-    type: String,
-    enum: {
-      values: ['male', 'female'],
-      message:
-        "The Gender field can only be the following: 'male', or 'female' ",
+const StudentSchema = new Schema<TStudentType, StudentModel>(
+  {
+    id: { type: String, required: true, unique: true },
+    name: {
+      type: UserNameSchema,
+      required: true,
     },
-    required: true,
-  },
-  dateOfBirth: { type: String },
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-    validate: {
-      validator: (value: string) => validator.isEmail(value),
-      message: '{VALUE} => is not valid',
+
+    //   this is called Enum type in Mongoose => this is only used for predefined property that will never gonna change
+    gender: {
+      type: String,
+      enum: {
+        values: ['male', 'female'],
+        message:
+          "The Gender field can only be the following: 'male', or 'female' ",
+      },
+      required: true,
+    },
+    dateOfBirth: { type: String },
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+      validate: {
+        validator: (value: string) => validator.isEmail(value),
+        message: '{VALUE} => is not valid',
+      },
+    },
+    password: {
+      type: String,
+      required: [true, 'password is Required'],
+      maxlength: [20, 'password can not be more than 20 characters'],
+    },
+    contactNumber: { type: String, required: true },
+    emergencyContactNumber: { type: String, required: true },
+
+    // again we are using Enum Because Blood Group is already for all time Predefined
+    bloodGroup: {
+      type: String,
+      enum: ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'],
+    },
+    presentAddress: { type: String, required: true },
+    permanentAddress: { type: String, required: true },
+    guardian: {
+      type: GuardianSchema,
+      required: true,
+    },
+    localGuardian: {
+      type: LocalGuardianSchema,
+      required: true,
+    },
+    profileImg: { type: String },
+    // enum
+    isActive: {
+      type: String,
+      enum: ['active', 'blocked'],
+      // default: 'active',
+    },
+    isDeleted: {
+      type: Boolean,
+      default: false,
     },
   },
-  password: {
-    type: String,
-    required: [true, 'password is Required'],
-    maxlength: [20, 'password can not be more than 20 characters'],
+  {
+    toJSON: {
+      virtuals: true, /// Enabling  virtuals to use on the Client
+    },
   },
-  contactNumber: { type: String, required: true },
-  emergencyContactNumber: { type: String, required: true },
+);
 
-  // again we are using Enum Because Blood Group is already for all time Predefined
-  bloodGroup: {
-    type: String,
-    enum: ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'],
-  },
-  presentAddress: { type: String, required: true },
-  permanentAddress: { type: String, required: true },
-  guardian: {
-    type: GuardianSchema,
-    required: true,
-  },
-  localGuardian: {
-    type: LocalGuardianSchema,
-    required: true,
-  },
-  profileImg: { type: String },
-  // enum
-  isActive: {
-    type: String,
-    enum: ['active', 'blocked'],
-    // default: 'active',
-  },
-  isDeleted: {
-    type: Boolean,
-    default: false,
-  },
+// virtual field which is not exist on the real DB but can be shown on the Interface I mean Client
+StudentSchema.virtual('fullname').get(function () {
+  // eslint-disable-next-line @typescript-eslint/no-this-alias
+  const user = this; ///this is refers to the full targeted Doc
+  return `${user.name.firstName}  ${user.name.middleName}  ${user.name.lastName}`; /// after this we have to enable virtual to show on use on the client
 });
 
 // 3. Create a Model.
