@@ -1,15 +1,16 @@
 import { Schema, model } from 'mongoose';
 import validator from 'validator';
 import {
-  Guardian,
-  LocalGuardian,
-  StudentType,
-  UserName,
+  StudentModel,
+  TGuardian,
+  TLocalGuardian,
+  TStudentType,
+  TUserName,
 } from './Students/student.interface';
 
 // 2. Create a Schema corresponding to the document interface.
 
-const UserNameSchema = new Schema<UserName>({
+const UserNameSchema = new Schema<TUserName>({
   firstName: {
     type: String,
     required: [true, 'First Name is Required'],
@@ -37,7 +38,7 @@ const UserNameSchema = new Schema<UserName>({
   },
 });
 
-const GuardianSchema = new Schema<Guardian>({
+const GuardianSchema = new Schema<TGuardian>({
   fathersName: {
     type: String,
     required: [true, 'fathers  Name is Required'],
@@ -63,7 +64,7 @@ const GuardianSchema = new Schema<Guardian>({
     required: [true, 'Mothers Occupation is Required'],
   },
 });
-const LocalGuardianSchema = new Schema<LocalGuardian>({
+const LocalGuardianSchema = new Schema<TLocalGuardian>({
   name: {
     type: String,
     required: [true, 'For Local Guardian Name is Required'],
@@ -82,7 +83,7 @@ const LocalGuardianSchema = new Schema<LocalGuardian>({
   },
 });
 
-const StudentSchema = new Schema<StudentType>({
+const StudentSchema = new Schema<TStudentType, StudentModel>({
   id: { type: String, required: true, unique: true },
   name: {
     type: UserNameSchema,
@@ -138,4 +139,22 @@ const StudentSchema = new Schema<StudentType>({
 // 3. Create a Model.
 // const User = model<IUser>('User', userSchema);
 
-export const StudentModel = model<StudentType>('Student', StudentSchema);
+// creating a custom static method
+
+StudentSchema.statics.isUserExists = async function (id: string) {
+  const existingUser = await Student.findOne({ id });
+
+  return existingUser;
+};
+
+// creating a custom instance method
+// StudentSchema.methods.isUserExists = async function (id: string) {
+//   const existingUser = await Student.findOne({ id });
+
+//   return existingUser;
+// };
+
+export const Student = model<TStudentType, StudentModel>(
+  'Student',
+  StudentSchema,
+);
