@@ -8,6 +8,9 @@ import {
   TUserName,
 } from './Students/student.interface';
 
+import bcrypt from 'bcrypt';
+import config from '../config';
+
 // 2. Create a Schema corresponding to the document interface.
 
 const UserNameSchema = new Schema<TUserName>({
@@ -89,6 +92,7 @@ const StudentSchema = new Schema<TStudentType, StudentModel>({
     type: UserNameSchema,
     required: true,
   },
+
   //   this is called Enum type in Mongoose => this is only used for predefined property that will never gonna change
   gender: {
     type: String,
@@ -108,6 +112,12 @@ const StudentSchema = new Schema<TStudentType, StudentModel>({
       validator: (value: string) => validator.isEmail(value),
       message: '{VALUE} => is not valid',
     },
+  },
+  password: {
+    type: String,
+    required: [true, 'password is Required'],
+    unique: true,
+    maxlength: [20, 'password can not be more than 20 characters'],
   },
   contactNumber: { type: String, required: true },
   emergencyContactNumber: { type: String, required: true },
@@ -153,6 +163,31 @@ StudentSchema.statics.isUserExists = async function (id: string) {
 
 //   return existingUser;
 // };
+
+//  mongoose Pre Save Middleware  / Hook and it will work on crate func or save method
+
+//  we have to keep in mind that thse pre and most or others stuff will only work before schema export
+
+StudentSchema.pre('save', async function (next) {
+  // console.log(this, 'pre hook : we will save our data');
+
+  // hasing password and save intoDb
+  // eslint-disable-next-line @typescript-eslint/no-this-alias
+  const user = this; // this means currently processing data
+
+  user.password = await bcrypt.hash(
+    user.password,
+    Number(config.bcrypt_salt_rounds),
+  );
+
+  next();
+});
+
+// post save middleware /hook
+
+StudentSchema.post('save', function () {
+  console.log(this, 'Post hook: we saved our data');
+});
 
 export const Student = model<TStudentType, StudentModel>(
   'Student',

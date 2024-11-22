@@ -41,6 +41,7 @@ export interface TStudentType {
   id: string;
   name: TUserName;
   email: string;
+  password: string;
   gender: 'male' | 'female';
   dateOfBirth?: string;
   contactNumber: string;
