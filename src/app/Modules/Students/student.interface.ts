@@ -1,4 +1,3 @@
-
 // Guardian Type
 export type Guardian = {
   fathersName: string;
@@ -11,7 +10,7 @@ export type Guardian = {
 // type of userName
 export type UserName = {
   firstName: string;
-  middleName: string;
+  middleName?: string;
   lastName: string;
 };
 
@@ -41,7 +40,7 @@ export interface StudentType {
   name: UserName;
   email: string;
   gender: 'male' | 'female';
-  dateOfBirth: string;
+  dateOfBirth?: string;
   contactNumber: string;
   emergencyContactNumber: string;
   bloodGroup?: BloodGroup;
@@ -50,7 +49,7 @@ export interface StudentType {
   guardian: Guardian;
   localGuardian: LocalGuardian;
   profileImg?: string;
-  isActive: 'Active' | 'InActive';
+  isActive?: 'active' | 'blocked';
 }
 
 // 2. Create a Schema corresponding to the document interface.
