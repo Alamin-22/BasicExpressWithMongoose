@@ -53,6 +53,7 @@ export interface TStudentType {
   localGuardian: TLocalGuardian;
   profileImg?: string;
   isActive?: 'active' | 'blocked';
+  isDeleted: boolean;
 }
 
 // 2. Create a Schema corresponding to the document interface.

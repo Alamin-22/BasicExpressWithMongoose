@@ -116,7 +116,6 @@ const StudentSchema = new Schema<TStudentType, StudentModel>({
   password: {
     type: String,
     required: [true, 'password is Required'],
-    unique: true,
     maxlength: [20, 'password can not be more than 20 characters'],
   },
   contactNumber: { type: String, required: true },
@@ -143,6 +142,10 @@ const StudentSchema = new Schema<TStudentType, StudentModel>({
     type: String,
     enum: ['active', 'blocked'],
     // default: 'active',
+  },
+  isDeleted: {
+    type: Boolean,
+    default: false,
   },
 });
 
@@ -172,8 +175,9 @@ StudentSchema.pre('save', async function (next) {
   // console.log(this, 'pre hook : we will save our data');
 
   // hasing password and save intoDb
+
   // eslint-disable-next-line @typescript-eslint/no-this-alias
-  const user = this; // this means currently processing data
+  const user = this; // this means currently processing data // this user refers to "doc"
 
   user.password = await bcrypt.hash(
     user.password,
@@ -185,8 +189,34 @@ StudentSchema.pre('save', async function (next) {
 
 // post save middleware /hook
 
-StudentSchema.post('save', function () {
-  console.log(this, 'Post hook: we saved our data');
+StudentSchema.post('save', function (doc, next) {
+  // after the getting the updated Data I mean hashed password we wil hide it from DB By Empty String
+
+  // console.log(this, 'Post hook: we saved our data');
+
+  doc.password = '';
+  next();
+});
+
+// query Middleware or query Hook
+
+StudentSchema.pre('find', function (next) {
+  /// making sure that only valid data is passed and deleted data is filtered out
+  this.find({ isDeleted: { $ne: true } });
+  next();
+});
+StudentSchema.pre('findOne', function (next) {
+  /// making sure that only valid data is passed and deleted data is filtered out
+  this.find({ isDeleted: { $ne: true } });
+  next();
+});
+
+StudentSchema.pre('aggregate', function (next) {
+  /// making sure that only valid data is passed and deleted data is filtered out
+  // this.find({ isDeleted: { $ne: true } });
+
+  this.pipeline().unshift({ $match: { isDeleted: { $ne: true } } });
+  next();
 });
 
 export const Student = model<TStudentType, StudentModel>(
