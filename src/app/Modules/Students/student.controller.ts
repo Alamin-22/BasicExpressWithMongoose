@@ -58,6 +58,7 @@ const getAllStudents = async (req: Request, res: Response) => {
       message: 'Student retrieve Successfully',
       data: result,
     });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     res.status(500).json({
       success: false,
