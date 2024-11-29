@@ -6,10 +6,10 @@ import {
   TLocalGuardian,
   TStudentType,
   TUserName,
-} from './Students/student.interface';
+} from './student.interface';
 
 import bcrypt from 'bcrypt';
-import config from '../config';
+import config from '../../config';
 
 // 2. Create a Schema corresponding to the document interface.
 
