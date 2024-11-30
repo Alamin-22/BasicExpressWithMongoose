@@ -1,8 +1,12 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { StudentServices } from './student.service';
 // import StudentValidationSchema from './student.joy.validation';
 
-const getAllStudents = async (req: Request, res: Response) => {
+const getAllStudents = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
     const result = await StudentServices.getAllStudentFromDB();
 
@@ -13,16 +17,21 @@ const getAllStudents = async (req: Request, res: Response) => {
     });
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
-    res.status(500).json({
-      success: false,
-      message: error.message || 'Something Went Wrong',
-      error,
-    });
-    console.log(error);
+    // res.status(500).json({
+    //   success: false,
+    //   message: error.message || 'Something Went Wrong',
+    //   error,
+    // });
+    // console.log(error);
+    next(error);
   }
 };
 
-const getSingleStudent = async (req: Request, res: Response) => {
+const getSingleStudent = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
     const studentId = req.params.studentId;
 
@@ -35,16 +44,16 @@ const getSingleStudent = async (req: Request, res: Response) => {
     });
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
-    res.status(500).json({
-      success: false,
-      message: error.message || 'Something Went Wrong',
-      error,
-    });
-    console.log(error);
+    // handling global error
+    next(error);
   }
 };
 // delete single student
-const deleteStudent = async (req: Request, res: Response) => {
+const deleteStudent = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
     const studentId = req.params.studentId;
 
@@ -57,12 +66,7 @@ const deleteStudent = async (req: Request, res: Response) => {
     });
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
-    res.status(500).json({
-      success: false,
-      message: error.message || 'Something Went Wrong',
-      error,
-    });
-    console.log(error);
+    next(error);
   }
 };
 
