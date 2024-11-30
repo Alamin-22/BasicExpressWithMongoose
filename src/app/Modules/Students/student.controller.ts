@@ -54,6 +54,7 @@ const getSingleStudent = async (
     next(error);
   }
 };
+
 // delete single student
 const deleteStudent = async (
   req: Request,

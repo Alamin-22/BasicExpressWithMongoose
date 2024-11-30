@@ -6,10 +6,9 @@
 import express, { Application, Request, Response } from 'express';
 const app: Application = express();
 import cors from 'cors';
-import { StudentRoutes } from './app/Modules/Students/student.route';
-import { userRoutes } from './app/Modules/User/user.route';
 import globalErrorHandler from './app/middlewares/globalErrorHandler';
 import notFound from './app/middlewares/notFound';
+import router from './app/routers';
 
 // parser
 
@@ -17,15 +16,13 @@ app.use(express.json());
 app.use(cors());
 
 //Application Routes
+app.use('/api/v1', router); // handling routers from separate func
 
-app.use('/api/v1/students', StudentRoutes);
-app.use('/api/v1/users', userRoutes);
-
-const GetAController = (req: Request, res: Response) => {
-  res.send('Hello World! er maire bap');
+const Test = (req: Request, res: Response) => {
+  res.send('BU Server Is Running');
 };
 
-app.get('/', GetAController);
+app.get('/', Test);
 
 // handling error
 
