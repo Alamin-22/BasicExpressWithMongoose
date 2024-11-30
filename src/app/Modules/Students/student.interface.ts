@@ -1,4 +1,4 @@
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 
 // Guardian Type
 export type TGuardian = {
@@ -39,6 +39,7 @@ export type TLocalGuardian = {
 // 1. Create an interface representing a document in MongoDB.
 export interface TStudentType {
   id: string;
+  user: Types.ObjectId;
   name: TUserName;
   email: string;
   password: string;
@@ -52,7 +53,6 @@ export interface TStudentType {
   guardian: TGuardian;
   localGuardian: TLocalGuardian;
   profileImg?: string;
-  isActive?: 'active' | 'blocked';
   isDeleted: boolean;
 }
 

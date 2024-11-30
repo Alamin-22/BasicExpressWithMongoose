@@ -2,6 +2,7 @@ import express, { Application, Request, Response } from 'express';
 const app: Application = express();
 import cors from 'cors';
 import { StudentRoutes } from './app/Modules/Students/student.route';
+import { userRoutes } from './app/Modules/User/user.route';
 
 // parser
 
@@ -11,6 +12,7 @@ app.use(cors());
 //Application Routes
 
 app.use('/api/v1/students', StudentRoutes);
+app.use('/api/v1/users', userRoutes);
 
 const GetAController = (req: Request, res: Response) => {
   res.send('Hello World! er maire bap');

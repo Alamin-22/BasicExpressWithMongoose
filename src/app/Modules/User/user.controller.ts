@@ -1,3 +1,4 @@
+import { Request, Response } from 'express';
 import { UserServices } from './user.service';
 
 const createStudent = async (req: Request, res: Response) => {
@@ -47,4 +48,8 @@ const createStudent = async (req: Request, res: Response) => {
     });
     console.log(error);
   }
+};
+
+export const userControllers = {
+  createStudent,
 };
