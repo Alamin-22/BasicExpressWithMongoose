@@ -16,11 +16,11 @@ const createStudentIntoDB = async (
   // have to set Student Role
   userData.role = 'student';
 
+  // set manually generated Id
+  userData.id = '20240117026';
+
   // create a student
   const result = await UserModel.create(userData); /// => this is called Built in Static Method
-
-  // set manually generated Id
-  userData.id = '20240107026';
 
   if (Object.keys(result).length) {
     //set id , _id as user
@@ -28,7 +28,7 @@ const createStudentIntoDB = async (
     studentData.user = result._id; // reference id
     const student = new Student(studentData); /// => create an instance
 
-    return student;
+    return await student.save(); // => this is called Built in instance method provided by mongoose;
   }
 
   // if (await student.isUserExists(studentData.id)) {

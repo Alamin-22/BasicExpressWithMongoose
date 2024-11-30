@@ -9,6 +9,4 @@ const userValidationSchema = z.object({
     .optional(), // password is a required string
 });
 
-export const UserValidation = {
-  userValidationSchema,
-};
+export default userValidationSchema;

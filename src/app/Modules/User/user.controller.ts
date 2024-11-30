@@ -3,18 +3,11 @@ import { UserServices } from './user.service';
 
 const createStudent = async (req: Request, res: Response) => {
   try {
-    // creating an Schema Validation using ZOD
-
-    // const student = req.body.student;
-    // we can also get this using Name Alias
-    const { password, student: studentData } = req.body; // => this is called name Alias in TS
-    // validate data using joi and it returns the validate Data into "value" filed and error into the error.
-    // so We have to pass this validate value into the Create Student func
-    // const { error, value } = StudentValidationSchema.validate(studentData); => this is using Joi
+    const { password, student: studentData } = req.body;
 
     // using Zod
 
-    // const zodParserData = StudentValidationSchema.parse(studentData);
+    // const zodParserData = userValidationSchema.parse(studentData);
 
     // will be calling services  functions to send this data
     // const result = await StudentServices.createStudentIntoDB(studentData); // => passing validate value into the func
