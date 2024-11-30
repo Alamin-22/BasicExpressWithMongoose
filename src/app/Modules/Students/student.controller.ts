@@ -1,5 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import { StudentServices } from './student.service';
+import sendResponse from '../../utils/sendResponse';
+import httpStatus from 'http-status';
 // import StudentValidationSchema from './student.joy.validation';
 
 const getAllStudents = async (
@@ -10,7 +12,9 @@ const getAllStudents = async (
   try {
     const result = await StudentServices.getAllStudentFromDB();
 
-    res.status(200).json({
+    // passing to the reusable func
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
       success: true,
       message: 'Student retrieve Successfully',
       data: result,
@@ -37,7 +41,9 @@ const getSingleStudent = async (
 
     const result = await StudentServices.getSingleStudentFromDB(studentId);
 
-    res.status(200).json({
+    // passing to the reusable func
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
       success: true,
       message: 'Student is retrieve Successfully',
       data: result,
@@ -59,11 +65,14 @@ const deleteStudent = async (
 
     const result = await StudentServices.deleteStudentFromDB(studentId);
 
-    res.status(200).json({
+    // passing to the reusable func
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
       success: true,
       message: 'Student deleted Successfully',
       data: result,
     });
+
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     next(error);
