@@ -1,84 +1,58 @@
-import { NextFunction, Request, Response } from 'express';
+/* eslint-disable no-unused-vars */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
+import { NextFunction, Request, RequestHandler, Response } from 'express';
 import { StudentServices } from './student.service';
 import sendResponse from '../../utils/sendResponse';
 import httpStatus from 'http-status';
-// import StudentValidationSchema from './student.joy.validation';
 
-const getAllStudents = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  try {
-    const result = await StudentServices.getAllStudentFromDB();
-
-    // passing to the reusable func
-    sendResponse(res, {
-      statusCode: httpStatus.OK,
-      success: true,
-      message: 'Student retrieve Successfully',
-      data: result,
-    });
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } catch (error: any) {
-    // res.status(500).json({
-    //   success: false,
-    //   message: error.message || 'Something Went Wrong',
-    //   error,
-    // });
-    // console.log(error);
-    next(error);
-  }
+// we are moving out our try catch logic to this func=> this is called higher order func
+const catchAsync = (fn: RequestHandler) => {
+  return (req: Request, res: Response, next: NextFunction) => {
+    Promise.resolve(fn(req, res, next)).catch((err) => next(err));
+  };
 };
 
-const getSingleStudent = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  try {
-    const studentId = req.params.studentId;
+const getAllStudents: RequestHandler = catchAsync(async (req, res, next) => {
+  const result = await StudentServices.getAllStudentFromDB();
 
-    const result = await StudentServices.getSingleStudentFromDB(studentId);
+  // passing to the reusable func
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Student retrieve Successfully',
+    data: result,
+  });
+});
 
-    // passing to the reusable func
-    sendResponse(res, {
-      statusCode: httpStatus.OK,
-      success: true,
-      message: 'Student is retrieve Successfully',
-      data: result,
-    });
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } catch (error: any) {
-    // handling global error
-    next(error);
-  }
-};
+const getSingleStudent: RequestHandler = catchAsync(async (req, res, next) => {
+  const studentId = req.params.studentId;
+
+  const result = await StudentServices.getSingleStudentFromDB(studentId);
+
+  // passing to the reusable func
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Student is retrieve Successfully',
+    data: result,
+  });
+});
 
 // delete single student
-const deleteStudent = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  try {
-    const studentId = req.params.studentId;
+const deleteStudent: RequestHandler = catchAsync(async (req, res, next) => {
+  const studentId = req.params.studentId;
 
-    const result = await StudentServices.deleteStudentFromDB(studentId);
+  const result = await StudentServices.deleteStudentFromDB(studentId);
 
-    // passing to the reusable func
-    sendResponse(res, {
-      statusCode: httpStatus.OK,
-      success: true,
-      message: 'Student deleted Successfully',
-      data: result,
-    });
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } catch (error: any) {
-    next(error);
-  }
-};
+  // passing to the reusable func
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Student deleted Successfully',
+    data: result,
+  });
+});
 
 export const studentControllers = {
   getAllStudents,
