@@ -1,7 +1,14 @@
-import express from 'express';
+import express, { NextFunction, Request, Response } from 'express';
 import { userControllers } from './user.controller';
 const router = express.Router();
 
-router.post('/create_student', userControllers.createStudent);
+// create a middleware
+
+const shenaBahini = (req: Request, res: Response, next: NextFunction) => {
+  console.log('This ARmy dorja khol');
+  next();
+};
+
+router.post('/create_student', shenaBahini, userControllers.createStudent);
 
 export const userRoutes = router;
