@@ -6,10 +6,7 @@ import {
   TLocalGuardian,
   TStudentType,
   TUserName,
-} from './Students/student.interface';
-
-import bcrypt from 'bcrypt';
-import config from '../config';
+} from './student.interface';
 
 // 2. Create a Schema corresponding to the document interface.
 
@@ -89,6 +86,12 @@ const LocalGuardianSchema = new Schema<TLocalGuardian>({
 const StudentSchema = new Schema<TStudentType, StudentModel>(
   {
     id: { type: String, required: true, unique: true },
+    user: {
+      type: Schema.Types.ObjectId,
+      required: [true, 'user id is required'],
+      unique: true,
+      ref: 'User', // => this will connect with the user
+    },
     name: {
       type: UserNameSchema,
       required: true,
@@ -114,11 +117,6 @@ const StudentSchema = new Schema<TStudentType, StudentModel>(
         message: '{VALUE} => is not valid',
       },
     },
-    password: {
-      type: String,
-      required: [true, 'password is Required'],
-      maxlength: [20, 'password can not be more than 20 characters'],
-    },
     contactNumber: { type: String, required: true },
     emergencyContactNumber: { type: String, required: true },
 
@@ -138,12 +136,6 @@ const StudentSchema = new Schema<TStudentType, StudentModel>(
       required: true,
     },
     profileImg: { type: String },
-    // enum
-    isActive: {
-      type: String,
-      enum: ['active', 'blocked'],
-      // default: 'active',
-    },
     isDeleted: {
       type: Boolean,
       default: false,
@@ -163,54 +155,11 @@ StudentSchema.virtual('fullname').get(function () {
   return `${user.name.firstName}  ${user.name.middleName}  ${user.name.lastName}`; /// after this we have to enable virtual to show on use on the client
 });
 
-// 3. Create a Model.
-// const User = model<IUser>('User', userSchema);
-
-// creating a custom static method
-
 StudentSchema.statics.isUserExists = async function (id: string) {
   const existingUser = await Student.findOne({ id });
 
   return existingUser;
 };
-
-// creating a custom instance method
-// StudentSchema.methods.isUserExists = async function (id: string) {
-//   const existingUser = await Student.findOne({ id });
-
-//   return existingUser;
-// };
-
-//  mongoose Pre Save Middleware  / Hook and it will work on crate func or save method
-
-//  we have to keep in mind that thse pre and most or others stuff will only work before schema export
-
-StudentSchema.pre('save', async function (next) {
-  // console.log(this, 'pre hook : we will save our data');
-
-  // hasing password and save intoDb
-
-  // eslint-disable-next-line @typescript-eslint/no-this-alias
-  const user = this; // this means currently processing data // this user refers to "doc"
-
-  user.password = await bcrypt.hash(
-    user.password,
-    Number(config.bcrypt_salt_rounds),
-  );
-
-  next();
-});
-
-// post save middleware /hook
-
-StudentSchema.post('save', function (doc, next) {
-  // after the getting the updated Data I mean hashed password we wil hide it from DB By Empty String
-
-  // console.log(this, 'Post hook: we saved our data');
-
-  doc.password = '';
-  next();
-});
 
 // query Middleware or query Hook
 
