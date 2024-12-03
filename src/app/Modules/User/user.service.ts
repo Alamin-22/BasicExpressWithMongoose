@@ -17,7 +17,7 @@ const createStudentIntoDB = async (
   userData.role = 'student';
 
   // set manually generated Id
-  userData.id = '20240117026';
+  userData.id = '20240117027';
 
   // create a student
   const result = await UserModel.create(userData); /// => this is called Built in Static Method

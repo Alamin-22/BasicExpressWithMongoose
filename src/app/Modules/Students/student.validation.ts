@@ -21,7 +21,8 @@ const LocalGuardianValidationSchema = z.object({
   contactNo: z.string().min(1, "Local guardian's contact number is required"),
   address: z.string().min(1, "Local guardian's address is required"),
 });
-export const createStudentValidationSchema = z.object({
+
+const createStudentValidationSchema = z.object({
   body: z.object({
     password: z.string().max(20),
     student: z.object({
@@ -29,18 +30,18 @@ export const createStudentValidationSchema = z.object({
       gender: z.enum(['male', 'female', 'other']),
       dateOfBirth: z.string().optional(),
       email: z.string().email(),
-      contactNo: z.string(),
-      emergencyContactNo: z.string(),
-      bloogGroup: z.enum(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-']),
+      contactNumber: z.string(), // Update key here
+      emergencyContactNumber: z.string(), // Update key here
+      bloodGroup: z.enum(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-']),
       presentAddress: z.string(),
       permanentAddress: z.string(),
       guardian: GuardianValidationSchema,
       localGuardian: LocalGuardianValidationSchema,
-      admissionSemester: z.string(),
       profileImg: z.string(),
     }),
   }),
 });
+
 export const StudentValidations = {
   createStudentValidationSchema,
 };
