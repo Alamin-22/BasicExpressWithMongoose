@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import { AnyZodObject } from 'zod';
 
-const ValidateHRequestMiddleWare = (schema: AnyZodObject) => {
+const ValidateRequestMiddleWare = (schema: AnyZodObject) => {
   return async (req: Request, res: Response, next: NextFunction) => {
     //  validation using Zod and if everything alright then next will be proceed
     try {
@@ -15,4 +15,4 @@ const ValidateHRequestMiddleWare = (schema: AnyZodObject) => {
   };
 };
 
-export default ValidateHRequestMiddleWare;
+export default ValidateRequestMiddleWare;
