@@ -24,8 +24,33 @@ const getSingleAcademicSemesterFromDB = async (id: string) => {
   return result;
 };
 
+const updateAcademicSemesterIntoDB = async (
+  id: string,
+  payLoad: Partial<TAcademicSemester>,
+) => {
+  // validate the Semester Code
+  if (
+    payLoad.name &&
+    payLoad.code &&
+    academicSemesterNameCodeMapper[payLoad.name] !== payLoad.code
+  ) {
+    throw new Error('Invalid Semester Code');
+  }
+
+  const result = await AcademicSemesterModel.findOneAndUpdate(
+    { _id: id },
+    payLoad,
+    {
+      new: true,
+    },
+  );
+
+  return result;
+};
+
 export const academicSemesterServices = {
   createAcademicSemesterIntoDB,
   getAllAcademicSemesterFromDB,
   getSingleAcademicSemesterFromDB,
+  updateAcademicSemesterIntoDB,
 };
