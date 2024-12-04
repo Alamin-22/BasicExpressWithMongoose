@@ -7,7 +7,7 @@ const router = express.Router();
 // create a middleware
 
 router.post(
-  '/create_academicSemester',
+  '/create_academic_semester',
   ValidateRequestMiddleWare(
     AcademicSemesterValidations.createAcademicSemesterValidationSchema,
   ),
