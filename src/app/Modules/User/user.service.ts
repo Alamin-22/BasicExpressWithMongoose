@@ -1,4 +1,5 @@
 import config from '../../config';
+import { TAcademicSemester } from '../academicSemester/academicSemester.interface';
 import { TStudentType } from '../Students/student.interface';
 import { Student } from '../Students/student.model';
 import { TUser } from './user.interface';
@@ -16,8 +17,11 @@ const createStudentIntoDB = async (
   // have to set Student Role
   userData.role = 'student';
 
-  // set manually generated Id
-  userData.id = '20240117026';
+  // year/semester/
+  // const generateStudentId = (payLoad: TAcademicSemester) => {};
+
+  // // Auto generated Id
+  // userData.id = generateStudentId();
 
   // create a student
   const result = await UserModel.create(userData); /// => this is called Built in Static Method
