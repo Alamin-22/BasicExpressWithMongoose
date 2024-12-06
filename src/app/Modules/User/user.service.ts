@@ -1,14 +1,12 @@
 import config from '../../config';
-import { TAcademicSemester } from '../academicSemester/academicSemester.interface';
+import { AcademicSemesterModel } from '../academicSemester/academicSemester.model';
 import { TStudentType } from '../Students/student.interface';
 import { Student } from '../Students/student.model';
 import { TUser } from './user.interface';
 import { UserModel } from './user.model';
+import { generateStudentId } from './user.utils';
 
-const createStudentIntoDB = async (
-  password: string,
-  studentData: TStudentType,
-) => {
+const createStudentIntoDB = async (password: string, payload: TStudentType) => {
   const userData: Partial<TUser> = {};
   // use Default password if pass is not provided
 
@@ -17,29 +15,25 @@ const createStudentIntoDB = async (
   // have to set Student Role
   userData.role = 'student';
 
-  // year/semester/
-  // const generateStudentId = (payLoad: TAcademicSemester) => {};
+  // find academicSemester Info
+  const admissionSemesterId = await AcademicSemesterModel.findById(
+    payload.admissionSemester,
+  );
 
-  // // Auto generated Id
-  // userData.id = generateStudentId();
+  // Auto generated Id
+  userData.id = await generateStudentId(admissionSemesterId!);
 
   // create a student
-  const result = await UserModel.create(userData); /// => this is called Built in Static Method
+  const newUser = await UserModel.create(userData); /// => this is called Built in Static Method
 
-  if (Object.keys(result).length) {
-    //set id , _id as user
-    studentData.id = result.id;
-    studentData.user = result._id; // reference id
-    const student = new Student(studentData); /// => create an instance
+  if (Object.keys(newUser).length) {
+    // set id , _id as user
+    payload.id = newUser.id;
+    payload.user = newUser._id; //reference _id
 
-    return await student.save(); // => this is called Built in instance method provided by mongoose;
+    const newStudent = await Student.create(payload);
+    return newStudent;
   }
-
-  // if (await student.isUserExists(studentData.id)) {
-  //   throw Error('User Already exists');
-  // }
-
-  // const result = await student.save(); // => this is called Built in instance method provided by mongoose
 };
 
 export const UserServices = {
