@@ -8,8 +8,10 @@ const createAcademicFacultyValidationSchema = z.object({
   }),
 });
 const updateAcademicFacultyValidationSchema = z.object({
-  name: z.string({
-    invalid_type_error: 'Academic Faculty Must be a String',
+  body: z.object({
+    name: z.string({
+      invalid_type_error: 'Academic Faculty Must be a String',
+    }),
   }),
 });
 
