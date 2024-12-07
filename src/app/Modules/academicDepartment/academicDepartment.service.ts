@@ -2,6 +2,8 @@ import { TAcademicDepartment } from './academicDepartment.interface';
 import { academicDepartmentModel } from './academicDepartment.model';
 
 const createAcademicDepartmentIntoDB = async (payLod: TAcademicDepartment) => {
+
+
   const result = await academicDepartmentModel.create(payLod);
   return result;
 };
