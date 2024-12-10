@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import config from '../../config';
 import { AcademicSemesterModel } from '../academicSemester/academicSemester.model';
 import { TStudentType } from '../Students/student.interface';
@@ -5,6 +6,8 @@ import { Student } from '../Students/student.model';
 import { TUser } from './user.interface';
 import { UserModel } from './user.model';
 import { generateStudentId } from './user.utils';
+import AppError from '../../errors/AppError';
+import httpStatus from 'http-status';
 
 const createStudentIntoDB = async (password: string, payload: TStudentType) => {
   const userData: Partial<TUser> = {};
@@ -20,19 +23,39 @@ const createStudentIntoDB = async (password: string, payload: TStudentType) => {
     payload.admissionSemester,
   );
 
-  // Auto generated Id
-  userData.id = await generateStudentId(admissionSemesterId!);
+  const session = await mongoose.startSession();
 
-  // create a student
-  const newUser = await UserModel.create(userData); /// => this is called Built in Static Method
+  try {
+    session.startTransaction();
+    // Auto generated Id
+    userData.id = await generateStudentId(admissionSemesterId!);
 
-  if (Object.keys(newUser).length) {
-    // set id , _id as user
-    payload.id = newUser.id;
-    payload.user = newUser._id; //reference _id
+    // create a student (transition 1)
+    const newUser = await UserModel.create([userData], { session }); /// => using transaction
 
-    const newStudent = await Student.create(payload);
+    if (!newUser.length) {
+      throw new AppError(httpStatus.BAD_REQUEST, 'Failed To Create User');
+    }
+
+    payload.id = newUser[0].id;
+    payload.user = newUser[0]._id; //reference _id
+
+    // create a student (transition 2)
+    const newStudent = await Student.create([payload], { session });
+
+    if (!newStudent) {
+      throw new AppError(httpStatus.BAD_REQUEST, 'Failed To Create User');
+    }
+
+    await session.commitTransaction();
+    await session.endSession();
+
     return newStudent;
+  } catch (err) {
+    await session.abortTransaction();
+    await session.endSession();
+
+    console.log(err);
   }
 };
 
