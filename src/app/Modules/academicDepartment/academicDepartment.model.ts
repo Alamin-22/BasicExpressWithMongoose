@@ -32,6 +32,6 @@ academicDepartmentSchema.pre('findOneAndUpdate', async function (next) {
 });
 
 export const academicDepartmentModel = model<TAcademicDepartment>(
-  'academicDepartment',
+  'AcademicDepartment',
   academicDepartmentSchema,
 );
