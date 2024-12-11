@@ -33,9 +33,10 @@ const getSingleStudent: RequestHandler = catchAsync(async (req, res) => {
 
 // Update single student
 const updateStudent: RequestHandler = catchAsync(async (req, res) => {
-  const studentId = req.params.studentId;
+  const { studentId } = req.params;
+  const { student } = req.body;
 
-  const result = await StudentServices.updateStudentIntoDB(studentId);
+  const result = await StudentServices.updateStudentIntoDB(studentId, student);
 
   // passing to the reusable func
   sendResponse(res, {

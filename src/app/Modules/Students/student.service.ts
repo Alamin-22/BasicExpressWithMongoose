@@ -3,6 +3,7 @@ import { Student } from './student.model';
 import AppError from '../../errors/AppError';
 import { UserModel } from '../User/user.model';
 import httpStatus from 'http-status';
+import { TStudentType } from './student.interface';
 
 const getAllStudentFromDB = async () => {
   const result = await Student.find()
@@ -32,42 +33,42 @@ const getSingleStudentFromDB = async (id: string) => {
   return result;
 };
 
-// update students form Db
-const updateStudentIntoDB = async (id: string) => {
-  const session = await mongoose.startSession();
+// update students form DB
+const updateStudentIntoDB = async (
+  id: string,
+  payload: Partial<TStudentType>,
+) => {
+  const { name, guardian, localGuardian, ...remainingStudentData } = payload;
 
-  try {
-    session.startTransaction();
+  const modifiedUpdatedData: Record<string, unknown> = {
+    ...remainingStudentData,
+  };
 
-    const updatedStudent = await Student.findOneAndUpdate(
-      { id },
-      { isDeleted: true },
-      { new: true, session },
-    );
-
-    if (!updatedStudent) {
-      throw new AppError(httpStatus.BAD_REQUEST, 'Failed to Update Student');
+  if (name && Object.keys(name).length) {
+    for (const [key, value] of Object.entries(name)) {
+      modifiedUpdatedData[`name.${key}`] = value;
     }
-
-    const updatedUser = await UserModel.findOneAndUpdate(
-      { id },
-      { isDeleted: true },
-      { new: true, session },
-    );
-
-    if (!updatedUser) {
-      throw new AppError(httpStatus.BAD_REQUEST, 'Failed to UPdate Student');
-    }
-
-    await session.commitTransaction();
-    await session.endSession();
-    // return the value
-    return updatedStudent;
-  } catch (error) {
-    await session.abortTransaction();
-    await session.endSession();
-    console.log(error);
   }
+
+  if (guardian && Object.keys(guardian).length) {
+    for (const [key, value] of Object.entries(guardian)) {
+      modifiedUpdatedData[`guardian.${key}`] = value;
+    }
+  }
+
+  if (localGuardian && Object.keys(localGuardian).length) {
+    for (const [key, value] of Object.entries(localGuardian)) {
+      modifiedUpdatedData[`localGuardian.${key}`] = value;
+    }
+  }
+
+  console.log(modifiedUpdatedData);
+
+  const result = await Student.findOneAndUpdate({ id }, modifiedUpdatedData, {
+    new: true,
+    runValidators: true,
+  });
+  return result;
 };
 
 // delete students form Db
@@ -104,7 +105,9 @@ const deleteStudentFromDB = async (id: string) => {
   } catch (error) {
     await session.abortTransaction();
     await session.endSession();
+
     console.log(error);
+    throw new Error('Failed To create Student');
   }
 };
 
