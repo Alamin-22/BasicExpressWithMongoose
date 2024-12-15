@@ -6,8 +6,7 @@ import catchAsync from '../../utils/catchAsync';
 
 // we are moving out our try catch logic to this func=> this is called higher order func
 const getAllStudents: RequestHandler = catchAsync(async (req, res) => {
-  const result = await StudentServices.getAllStudentFromDB();
-
+  const result = await StudentServices.getAllStudentFromDB(req.query);
   // passing to the reusable func
   sendResponse(res, {
     statusCode: httpStatus.OK,

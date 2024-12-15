@@ -51,12 +51,12 @@ const createStudentIntoDB = async (password: string, payload: TStudentType) => {
     await session.endSession();
 
     return newStudent;
-  } catch (err) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (err: any) {
     await session.abortTransaction();
     await session.endSession();
 
-    console.log(err);
-    throw new Error('Failed To create Student');
+    throw new Error(err);
   }
 };
 
