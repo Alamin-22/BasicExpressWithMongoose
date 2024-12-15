@@ -7,7 +7,6 @@ import {
   TStudentType,
   TUserName,
 } from './student.interface';
-
 // 2. Create a Schema corresponding to the document interface.
 
 const UserNameSchema = new Schema<TUserName>({
@@ -140,6 +139,10 @@ const StudentSchema = new Schema<TStudentType, StudentModel>(
       type: Schema.Types.ObjectId,
       ref: 'AcademicSemester',
     },
+    academicDepartment: {
+      type: Schema.Types.ObjectId,
+      ref: 'AcademicDepartment',
+    },
     isDeleted: {
       type: Boolean,
       default: false,
@@ -161,6 +164,10 @@ StudentSchema.virtual('fullname').get(function () {
 
 StudentSchema.statics.isUserExists = async function (id: string) {
   const existingUser = await Student.findOne({ id });
+
+  // if (!existingUser) {
+  //   throw new AppError(httpStatus.BAD_REQUEST, 'This User is not exist');
+  // }
 
   return existingUser;
 };
