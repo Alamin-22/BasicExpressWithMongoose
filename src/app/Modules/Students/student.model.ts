@@ -159,7 +159,7 @@ const StudentSchema = new Schema<TStudentType, StudentModel>(
 StudentSchema.virtual('fullname').get(function () {
   // eslint-disable-next-line @typescript-eslint/no-this-alias
   const user = this; ///this is refers to the full targeted Doc
-  return `${user.name.firstName}  ${user.name.middleName}  ${user.name.lastName}`; /// after this we have to enable virtual to show on use on the client
+  return `${user?.name?.firstName}  ${user?.name?.middleName}  ${user?.name?.lastName}`; /// after this we have to enable virtual to show on use on the client
 });
 
 StudentSchema.statics.isUserExists = async function (id: string) {
