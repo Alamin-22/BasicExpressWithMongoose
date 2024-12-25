@@ -8,9 +8,9 @@ import { UserModel } from './user.model';
 import { generateFacultyId, generateStudentId } from './user.utils';
 import AppError from '../../errors/AppError';
 import httpStatus from 'http-status';
-import { TFaculty } from '../Faculty/faculty.interface';
+import { TFaculty } from '../FacultyMember/facultyMember.interface';
 import { academicDepartmentModel } from '../academicDepartment/academicDepartment.model';
-import { FacultyModel } from '../Faculty/faculty.model';
+import { FacultyModel } from '../FacultyMember/facultyMember.model';
 
 const createStudentIntoDB = async (password: string, payload: TStudentType) => {
   const userData: Partial<TUser> = {};

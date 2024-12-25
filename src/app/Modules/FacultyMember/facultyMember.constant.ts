@@ -1,4 +1,4 @@
-import { TBloodGroup, TGender } from './faculty.interface';
+import { TBloodGroup, TGender } from "./facultyMember.interface";
 
 export const Gender: TGender[] = ['male', 'female', 'other'];
 

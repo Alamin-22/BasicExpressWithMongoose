@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { BloodGroup, Gender } from './faculty.constant';
+import { BloodGroup, Gender } from './facultyMember.constant';
 
 const createUserNameValidationSchema = z.object({
   firstName: z
@@ -43,7 +43,7 @@ export const updateFacultyValidationSchema = z.object({
   body: z.object({
     faculty: z.object({
       designation: z.string().optional(),
-      name: updateUserNameValidationSchema,
+      name: updateUserNameValidationSchema.optional(),
       gender: z.enum([...Gender] as [string, ...string[]]).optional(),
       dateOfBirth: z.string().optional(),
       email: z.string().email().optional(),

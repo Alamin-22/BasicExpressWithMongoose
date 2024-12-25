@@ -4,7 +4,7 @@ import { StudentRoutes } from '../Modules/Students/student.route';
 import { academicSemesterRoutes } from '../Modules/academicSemester/academicSemester.route';
 import { academicFacultyRoutes } from '../Modules/academicFaculty/academicFaculty.route';
 import { academicDepartmentRoutes } from '../Modules/academicDepartment/academicDepartment.route';
-import { FacultyRoutes } from '../Modules/Faculty/faculty.route';
+import { FacultyRoutes } from '../Modules/FacultyMember/facultyMember.route';
 
 const router = Router();
 
