@@ -40,6 +40,12 @@ const updateFacultyIntoDB = async (id: string, payload: Partial<TFaculty>) => {
       modifiedUpdatedData[`name.${key}`] = value;
     }
   }
+
+  const result = await FacultyModel.findByIdAndUpdate(id, modifiedUpdatedData, {
+    new: true,
+    runValidators: true,
+  });
+  return result;
 };
 
 const deleteFacultyFromDB = async (id: string) => {
@@ -55,7 +61,10 @@ const deleteFacultyFromDB = async (id: string) => {
     );
 
     if (!deletedFaculty) {
-      throw new AppError(httpStatus.BAD_REQUEST, 'Failed to delete faculty');
+      throw new AppError(
+        httpStatus.BAD_REQUEST,
+        'Failed to delete faculty Member',
+      );
     }
 
     // get user _id from deletedFaculty
