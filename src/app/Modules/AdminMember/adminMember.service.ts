@@ -38,14 +38,10 @@ const updateAdminIntoDB = async (id: string, payload: Partial<TAdmin>) => {
     }
   }
 
-  const result = await AdminModel.findByIdAndUpdate(
-    { id },
-    modifiedUpdatedData,
-    {
-      new: true,
-      runValidators: true,
-    },
-  );
+  const result = await AdminModel.findByIdAndUpdate(id, modifiedUpdatedData, {
+    new: true,
+    runValidators: true,
+  });
   return result;
 };
 
@@ -62,7 +58,7 @@ const deleteAdminFromDB = async (id: string) => {
     );
 
     if (!deletedAdmin) {
-      throw new AppError(httpStatus.BAD_REQUEST, 'Failed to delete student');
+      throw new AppError(httpStatus.BAD_REQUEST, 'Failed to delete Admin');
     }
 
     // get user _id from deletedAdmin

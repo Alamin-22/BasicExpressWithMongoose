@@ -17,7 +17,7 @@ const getAllStudents: RequestHandler = catchAsync(async (req, res) => {
 });
 
 const getSingleStudent: RequestHandler = catchAsync(async (req, res) => {
-  const studentId = req.params.studentId;
+  const studentId = req.params.id;
 
   const result = await StudentServices.getSingleStudentFromDB(studentId);
 
@@ -32,10 +32,10 @@ const getSingleStudent: RequestHandler = catchAsync(async (req, res) => {
 
 // Update single student
 const updateStudent: RequestHandler = catchAsync(async (req, res) => {
-  const { studentId } = req.params;
+  const { id } = req.params;
   const { student } = req.body;
 
-  const result = await StudentServices.updateStudentIntoDB(studentId, student);
+  const result = await StudentServices.updateStudentIntoDB(id, student);
 
   // passing to the reusable func
   sendResponse(res, {
@@ -48,7 +48,7 @@ const updateStudent: RequestHandler = catchAsync(async (req, res) => {
 
 // delete single student
 const deleteStudent: RequestHandler = catchAsync(async (req, res) => {
-  const studentId = req.params.studentId;
+  const studentId = req.params.id;
 
   const result = await StudentServices.deleteStudentFromDB(studentId);
 
