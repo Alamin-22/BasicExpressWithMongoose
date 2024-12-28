@@ -1,5 +1,5 @@
 import { Types } from 'mongoose';
-
+         
 export type TGender = 'male' | 'female' | 'other';
 export type TBloodGroup =
   | 'A+'
