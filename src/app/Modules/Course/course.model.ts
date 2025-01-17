@@ -55,6 +55,26 @@ const courseSchema = new Schema<TCourse>(
   },
 );
 
+// filter out deleted documents
+courseSchema.pre('find', function (next) {
+  this.find({ isDeleted: { $ne: true } });
+  next();
+});
+
+courseSchema.pre('findOne', function (next) {
+  this.find({ isDeleted: { $ne: true } });
+  next();
+});
+
+courseSchema.pre('aggregate', function (next) {
+  this.pipeline().unshift({ $match: { isDeleted: { $ne: true } } });
+  next();
+});
+// 
+
+
+
+
 export const CourseModel = model<TCourse>('Course', courseSchema);
 
 const courseFacultySchema = new Schema<TCourseFaculty>({

@@ -120,14 +120,14 @@ const updateCourseIntoDB = async (id: string, payload: Partial<TCourse>) => {
 };
 
 const deleteCourseFromDB = async (id: string) => {
-  const result = await CourseModel.findByIdAndUpdate(
+  const deletedCourse = await CourseModel.findByIdAndUpdate(
     id,
     { isDeleted: true },
     {
       new: true,
     },
   );
-  return result;
+  return deletedCourse;
 };
 
 const assignFacultiesWithCourseIntoDB = async (
