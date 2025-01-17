@@ -1,8 +1,73 @@
+import httpStatus from 'http-status';
+import AppError from '../../errors/AppError';
+import { SemesterRegistrationModel } from '../SemesterRegistration/SemesterRegistration.model';
 import { TOfferedCourse } from './OfferedCourse.interface';
 import { OfferedCourseModel } from './OfferedCourse.model';
+import { academicFacultyModel } from '../academicFaculty/academicFaculty.model';
+import { academicDepartmentModel } from '../academicDepartment/academicDepartment.model';
+import { CourseModel } from '../Course/course.model';
+import { FacultyModel } from '../FacultyMember/facultyMember.model';
 
 const createOfferedCourseIntoDB = async (payload: TOfferedCourse) => {
-  const result = await OfferedCourseModel.create(payload);
+  const {
+    semesterRegistration,
+    academicFaculty,
+    academicDepartment,
+    course,
+    faculty,
+  } = payload;
+
+  // Checking if the semester registration id is exists
+
+  const isSemesterRegistrationExists =
+    await SemesterRegistrationModel.findById(semesterRegistration);
+
+  if (!isSemesterRegistrationExists) {
+    throw new AppError(
+      httpStatus.NOT_FOUND,
+      'Semester Registration Not Found!',
+    );
+  }
+
+  const academicSemester = isSemesterRegistrationExists.academicSemester;
+  // Checking if the Academic Faculty id is exists
+
+  const isAcademicFacultyExists =
+    await academicFacultyModel.findById(academicFaculty);
+
+  if (!isAcademicFacultyExists) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Academic Faculty Not Found!');
+  }
+
+  // Checking if the Academic Department id is exists
+  const isAcademicDepartmentExists =
+    await academicDepartmentModel.findById(academicDepartment);
+
+  if (!isAcademicDepartmentExists) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Academic Department Not Found!');
+  }
+
+  // Checking if the Academic Course id is exists
+  const isCourseExists = await CourseModel.findById(course);
+
+  if (!isCourseExists) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Course Not Found!');
+  }
+
+  // Checking if the Academic faculty member id is exists
+  const isFacultyMemberExists = await FacultyModel.findById(faculty);
+
+  if (!isFacultyMemberExists) {
+    throw new AppError(
+      httpStatus.NOT_FOUND,
+      'Academic Faculty Member Not Found!',
+    );
+  }
+
+  const result = await OfferedCourseModel.create({
+    ...payload,
+    academicSemester,
+  });
 
   return result;
 };
