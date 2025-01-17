@@ -25,7 +25,10 @@ const updateSemesterRegistration = catchAsync(
   async (req: Request, res: Response) => {
     const { id } = req.params;
     const result =
-      await SemesterRegistrationServices.updateSemesterRegistrationIntoDB(id);
+      await SemesterRegistrationServices.updateSemesterRegistrationIntoDB(
+        id,
+        req.body,
+      );
 
     // sending data to the API
     sendResponse(res, {
