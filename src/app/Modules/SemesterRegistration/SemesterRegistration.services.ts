@@ -36,6 +36,12 @@ const createSemesterRegistrationIntoDB = async (
   return result;
 };
 
+const updateSemesterRegistrationIntoDB = async (id: string) => {
+  
+//   const result = await SemesterRegistrationModel.create(payload);
+//   return result;
+};
+
 const getAllSemesterRegistrationsFromDB = async (
   query: Record<string, unknown>,
 ) => {
@@ -64,4 +70,5 @@ export const SemesterRegistrationServices = {
   createSemesterRegistrationIntoDB,
   getAllSemesterRegistrationsFromDB,
   getSingleSemesterRegistrationsFromDB,
+  updateSemesterRegistrationIntoDB,
 };
