@@ -225,38 +225,41 @@ const updateOfferedCourseIntoDB = async (
   return result;
 };
 
-// const deleteOfferedCourseFromDB = async (id: string) => {
-//   /**
-//    * Step 1: check if the offered course exists
-//    * Step 2: check if the semester registration status is upcoming
-//    * Step 3: delete the offered course
-//    */
-//   const isOfferedCourseExists = await OfferedCourse.findById(id);
+const deleteOfferedCourseFromDB = async (id: string) => {
+  /**
+   * Step 1: check if the offered course exists
+   * Step 2: check if the semester registration status is upcoming
+   * Step 3: delete the offered course
+   */
+  const isOfferedCourseExists = await OfferedCourseModel.findById(id);
 
-//   if (!isOfferedCourseExists) {
-//     throw new AppError(httpStatus.NOT_FOUND, 'Offered Course not found');
-//   }
+  if (!isOfferedCourseExists) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Offered Course not found');
+  }
 
-//   const semesterRegistation = isOfferedCourseExists.semesterRegistration;
+  const semesterRegistration = isOfferedCourseExists.semesterRegistration;
 
-//   const semesterRegistrationStatus =
-//     await SemesterRegistration.findById(semesterRegistation).select('status');
+  const semesterRegistrationStatus =
+    await SemesterRegistrationModel.findById(semesterRegistration).select(
+      'status',
+    );
 
-//   if (semesterRegistrationStatus?.status !== 'UPCOMING') {
-//     throw new AppError(
-//       httpStatus.BAD_REQUEST,
-//       `Offered course can not update ! because the semester ${semesterRegistrationStatus}`,
-//     );
-//   }
+  if (semesterRegistrationStatus?.status !== 'UPCOMING') {
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      `Offered course can not update ! because the semester ${semesterRegistrationStatus}`,
+    );
+  }
 
-//   const result = await OfferedCourse.findByIdAndDelete(id);
+  const result = await OfferedCourseModel.findByIdAndDelete(id);
 
-//   return result;
-// };
+  return result;
+};
 
 export const OfferedCourseServices = {
   createOfferedCourseIntoDB,
   updateOfferedCourseIntoDB,
   getAllOfferedCoursesFromDB,
   getSingleOfferedCourseFromDB,
+  deleteOfferedCourseFromDB,
 };
