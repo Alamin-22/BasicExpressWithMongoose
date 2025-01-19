@@ -14,9 +14,21 @@ const createOfferedCourseIntoDB = async (payload: TOfferedCourse) => {
     academicFaculty,
     academicDepartment,
     course,
+    section,
     faculty,
   } = payload;
-
+  /**
+   * Step 1: check if the semester registration id is exists!
+   * Step 2: check if the academic faculty id is exists!
+   * Step 3: check if the academic department id is exists!
+   * Step 4: check if the course id is exists!
+   * Step 5: check if the faculty id is exists!
+   * Step 6: check if the department is belong to the  faculty
+   * Step 7: check if the same offered course same section in same registered semester exists
+   * Step 8: get the schedules of the faculties
+   * Step 9: check if the faculty is available at that time. If not then throw error
+   * Step 10: create the offered course
+   */
   // Checking if the semester registration id is exists
 
   const isSemesterRegistrationExists =
@@ -61,6 +73,36 @@ const createOfferedCourseIntoDB = async (payload: TOfferedCourse) => {
     throw new AppError(
       httpStatus.NOT_FOUND,
       'Academic Faculty Member Not Found!',
+    );
+  }
+
+  // checking if the department belong to Faculty
+
+  const isDepartmentBelongToTheFaculty = await academicDepartmentModel.findOne({
+    academicFaculty,
+    _id: academicDepartment,
+  });
+
+  if (!isDepartmentBelongToTheFaculty) {
+    throw new AppError(
+      httpStatus.NOT_FOUND,
+      `This ${isAcademicDepartmentExists.name} is not belong the this ${isAcademicFacultyExists.name} Faculty!!`,
+    );
+  }
+
+  // checking if same offered course and same registration course are exist
+
+  const isSameOfferedCourseExistWithSameRegisteredWithSameSectionExist =
+    await OfferedCourseModel.findOne({
+      semesterRegistration,
+      course,
+      section,
+    });
+
+  if (isSameOfferedCourseExistWithSameRegisteredWithSameSectionExist) {
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      `Offered Course with same Section is already Exist`,
     );
   }
 
