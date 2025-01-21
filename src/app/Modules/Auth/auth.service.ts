@@ -1,7 +1,9 @@
 import httpStatus from 'http-status';
 import AppError from '../../errors/AppError';
 import { UserModel } from '../User/user.model';
-import { TLoginUser } from './Auth.interface';
+import { TLoginUser } from './auth.interface';
+import jwt from 'jsonwebtoken';
+import config from '../../config';
 
 const loginUser = async (payload: TLoginUser) => {
   // checking if the user is exist
@@ -27,17 +29,23 @@ const loginUser = async (payload: TLoginUser) => {
   }
 
   //checking if the password is correct
+  const isCorrectPassword = await UserModel.isPasswordMatched(
+    payload?.password,
+    user?.password,
+  );
 
-  if (!(await UserModel.isPasswordMatched(payload?.password, user?.password)))
+  if (!isCorrectPassword)
     throw new AppError(httpStatus.FORBIDDEN, 'Password do not matched');
 
   //create token and sent to the  client
 
-  // const accessToken = createToken(
-  //   jwtPayload,
-  //   config.jwt_access_secret as string,
-  //   config.jwt_access_expires_in as string,
-  // );
+  const jwtPayload = {
+    userId: user.id,
+    role: user.role,
+  };
+  const accessToken = jwt.sign(jwtPayload, config.access_secret as string, {
+    expiresIn: '10d',
+  });
 
   // const refreshToken = createToken(
   //   jwtPayload,
@@ -46,7 +54,8 @@ const loginUser = async (payload: TLoginUser) => {
   // );
 
   return {
-    // needsPasswordChange: user?.needsPasswordChange,
+    needsPasswordChange: user?.needsPasswordChange,
+    accessToken,
   };
 };
 
