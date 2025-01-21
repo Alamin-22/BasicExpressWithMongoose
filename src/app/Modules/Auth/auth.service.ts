@@ -60,6 +60,14 @@ const loginUser = async (payload: TLoginUser) => {
   };
 };
 
+const changedPassword = (user: { userId: string; role: string }, payload) => {
+  const result = await UserModel.findOneAndUpdate({
+    id: user.userId,
+    role: user.role,
+  });
+};
+
 export const AuthServices = {
   loginUser,
+  changedPassword,
 };
