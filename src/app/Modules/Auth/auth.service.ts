@@ -43,6 +43,7 @@ const loginUser = async (payload: TLoginUser) => {
     userId: user.id,
     role: user.role,
   };
+
   const accessToken = jwt.sign(jwtPayload, config.access_secret as string, {
     expiresIn: '10d',
   });
