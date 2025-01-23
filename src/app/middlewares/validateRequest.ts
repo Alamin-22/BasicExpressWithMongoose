@@ -8,6 +8,7 @@ const ValidateRequestMiddleWare = (schema: AnyZodObject) => {
 
     await schema.parseAsync({
       body: req.body,
+      cookies: req.cookies,
     });
     next();
   });

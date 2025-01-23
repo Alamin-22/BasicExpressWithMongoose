@@ -123,6 +123,7 @@ const changePassword = async (
 };
 
 const refreshToken = async (token: string) => {
+  
   // checking if the given token is valid
   const decoded = jwt.verify(
     token,

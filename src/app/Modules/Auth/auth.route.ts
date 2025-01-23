@@ -26,7 +26,7 @@ router.post(
 
 router.post(
   '/refresh_token',
-  ValidateRequestMiddleWare(AuthValidations.changePasswordValidationSchema),
+  ValidateRequestMiddleWare(AuthValidations.refreshTokenValidationSchema),
   AuthControllers.refreshToken,
 );
 
