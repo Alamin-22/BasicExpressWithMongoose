@@ -45,8 +45,19 @@ const AuthValidationMiddleWare = (...requiredRoles: TUser[]) => {
       throw new AppError(httpStatus.FORBIDDEN, 'This user is blocked ! !');
     }
 
-    // checking the Role of the User
+    //
+    if (
+      user.passwordChangedAt &&
+      UserModel.isJWTIssuedBeforePasswordChanged(
+        user.passwordChangedAt,
+        iat as number,
+      )
+    ) {
+      // checking the Role of the User
+      throw new AppError(httpStatus.UNAUTHORIZED, 'Your Are Unauthorized!');
+    }
     if (requiredRoles && !requiredRoles.includes(role)) {
+      // checking the Role of the User
       throw new AppError(httpStatus.UNAUTHORIZED, 'Your Are Unauthorized!');
     }
 

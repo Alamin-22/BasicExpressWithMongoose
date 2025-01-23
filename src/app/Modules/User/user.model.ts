@@ -72,10 +72,13 @@ userSchema.statics.isUserExistByCustomId = async function (id: string) {
 };
 
 userSchema.statics.isJWTIssuedBeforePasswordChanged = async function (
-  JwtIssuedTimeStamp: Date,
+  JwtIssuedTimeStamp: number,
   passwordChangedTimeStamp: Date,
 ) {
-  return passwordChangedTimeStamp > JwtIssuedTimeStamp;
+  const passwordChangedTime =
+    new Date(passwordChangedTimeStamp).getTime() / 1000;
+
+  return passwordChangedTime > JwtIssuedTimeStamp;
 };
 
 userSchema.statics.isPasswordMatched = async function (
