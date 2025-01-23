@@ -15,6 +15,10 @@ const userSchema = new Schema<TUser, TUserModel>(
       required: true,
       select: 0, // hide password from query result
     },
+
+    passwordChangedAt: {
+      type: Date,
+    },
     needsPasswordChange: {
       type: Boolean,
       default: true,
