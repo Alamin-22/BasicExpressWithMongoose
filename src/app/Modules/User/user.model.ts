@@ -15,6 +15,10 @@ const userSchema = new Schema<TUser, TUserModel>(
       required: true,
       select: 0, // hide password from query result
     },
+
+    passwordChangedAt: {
+      type: Date,
+    },
     needsPasswordChange: {
       type: Boolean,
       default: true,
@@ -65,6 +69,16 @@ userSchema.post('save', function (doc, next) {
 
 userSchema.statics.isUserExistByCustomId = async function (id: string) {
   return await UserModel.findOne({ id }).select('+password');
+};
+
+userSchema.statics.isJWTIssuedBeforePasswordChanged = async function (
+  JwtIssuedTimeStamp: number,
+  passwordChangedTimeStamp: Date,
+) {
+  const passwordChangedTime =
+    new Date(passwordChangedTimeStamp).getTime() / 1000;
+
+  return passwordChangedTime > JwtIssuedTimeStamp;
 };
 
 userSchema.statics.isPasswordMatched = async function (
