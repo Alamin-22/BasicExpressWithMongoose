@@ -71,6 +71,13 @@ userSchema.statics.isUserExistByCustomId = async function (id: string) {
   return await UserModel.findOne({ id }).select('+password');
 };
 
+userSchema.statics.isJWTIssuedBeforePasswordChanged = async function (
+  JwtIssuedTimeStamp: Date,
+  passwordChangedTimeStamp: Date,
+) {
+  return passwordChangedTimeStamp > JwtIssuedTimeStamp;
+};
+
 userSchema.statics.isPasswordMatched = async function (
   plainTextPassword,
   hashedPassword,
