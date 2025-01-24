@@ -7,7 +7,7 @@ import catchAsync from '../utils/catchAsync';
 import { TUserRole } from '../Modules/User/user.interface';
 import { UserModel } from '../Modules/User/user.model';
 
-const auth = (...requiredRoles: TUserRole[]) => {
+const AuthValidationMiddleWare = (...requiredRoles: TUserRole[]) => {
   return catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const token = req.headers.authorization;
 
@@ -67,4 +67,4 @@ const auth = (...requiredRoles: TUserRole[]) => {
   });
 };
 
-export default auth;
+export default AuthValidationMiddleWare;

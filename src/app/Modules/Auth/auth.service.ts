@@ -128,11 +128,6 @@ const refreshToken = async (token: string) => {
     token,
     config.refresh_secret as string,
   ) as JwtPayload;
-  console.log(
-    'This is coming from the Auth Service 131 line',
-    config.refresh_secret,
-    { decoded },
-  );
 
   const { userId, iat } = decoded;
 
@@ -176,12 +171,6 @@ const refreshToken = async (token: string) => {
     config.access_secret as string,
     config.jwt_access_expire_In as string,
   );
-
-  // const accessToken = createToken(
-  //   jwtPayload,
-  //   config.jwt_access_secret as string,
-  //   config.jwt_access_expires_in as string,
-  // );
 
   return {
     accessToken,
