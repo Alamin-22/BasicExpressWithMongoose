@@ -1,27 +1,30 @@
 import { NextFunction, Request, Response } from 'express';
-import catchAsync from '../utils/catchAsync';
-import AppError from '../errors/AppError';
 import httpStatus from 'http-status';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import config from '../config';
-import { TUser } from '../Modules/User/user.interface';
+import AppError from '../errors/AppError';
+import catchAsync from '../utils/catchAsync';
+import { TUserRole } from '../Modules/User/user.interface';
 import { UserModel } from '../Modules/User/user.model';
 
-const AuthValidationMiddleWare = (...requiredRoles: TUser[]) => {
+const AuthValidationMiddleWare = (...requiredRoles: TUserRole[]) => {
   return catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const token = req.headers.authorization;
-
+    console.log(requiredRoles);
+    // checking if the token is missing
     if (!token) {
-      throw new AppError(httpStatus.UNAUTHORIZED, 'Your Are Unauthorized!');
+      throw new AppError(httpStatus.UNAUTHORIZED, 'You are not authorized!');
     }
 
-    // checking if the token is valid
+    // checking if the given token is valid
     const decoded = jwt.verify(
       token,
       config.access_secret as string,
     ) as JwtPayload;
 
     const { role, userId, iat } = decoded;
+
+    console.log('This is coming from the line no 27', decoded);
 
     // checking if the user is exist
     const user = await UserModel.isUserExistByCustomId(userId);
@@ -38,14 +41,12 @@ const AuthValidationMiddleWare = (...requiredRoles: TUser[]) => {
     }
 
     // checking if the user is blocked
-
     const userStatus = user?.status;
 
     if (userStatus === 'blocked') {
       throw new AppError(httpStatus.FORBIDDEN, 'This user is blocked ! !');
     }
 
-    //
     if (
       user.passwordChangedAt &&
       UserModel.isJWTIssuedBeforePasswordChanged(
@@ -53,15 +54,16 @@ const AuthValidationMiddleWare = (...requiredRoles: TUser[]) => {
         iat as number,
       )
     ) {
-      // checking the Role of the User
-      throw new AppError(httpStatus.UNAUTHORIZED, 'Your Are Unauthorized!');
-    }
-    if (requiredRoles && !requiredRoles.includes(role)) {
-      // checking the Role of the User
-      throw new AppError(httpStatus.UNAUTHORIZED, 'Your Are Unauthorized!');
+      throw new AppError(httpStatus.UNAUTHORIZED, 'You are not authorized !');
     }
 
-    // decoded undefined
+    if (requiredRoles && !requiredRoles.includes(role)) {
+      throw new AppError(
+        httpStatus.UNAUTHORIZED,
+        'You are not authorized  hi!',
+      );
+    }
+
     req.user = decoded as JwtPayload;
     next();
   });

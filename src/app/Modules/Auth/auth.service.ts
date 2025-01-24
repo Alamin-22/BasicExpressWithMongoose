@@ -54,8 +54,8 @@ const loginUser = async (payload: TLoginUser) => {
 
   const refreshToken = createToken(
     jwtPayload,
-    config.jwt_refresh_expire_In as string,
-    config.jwt_refresh_expire_In as string,
+    config.refresh_secret as string, /// this is the refresh secret
+    config.jwt_refresh_expire_In as string, // this is the refresh token expire time
   );
 
   return {
@@ -123,12 +123,16 @@ const changePassword = async (
 };
 
 const refreshToken = async (token: string) => {
-  
+  console.log('Refresh Secret:', config.refresh_secret);
+  console.log('Token:', token);
+
   // checking if the given token is valid
   const decoded = jwt.verify(
     token,
     config.refresh_secret as string,
   ) as JwtPayload;
+
+  console.log('This is coming from the refresh Token API', decoded);
 
   const { userId, iat } = decoded;
 
