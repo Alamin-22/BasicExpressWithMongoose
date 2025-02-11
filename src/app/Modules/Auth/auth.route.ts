@@ -31,6 +31,12 @@ router.post(
 );
 
 router.post(
+  '/reset_password',
+  ValidateRequestMiddleWare(AuthValidations.resetPasswordValidationSchema),
+  AuthControllers.forgetPassword,
+);
+
+router.post(
   '/refresh_token',
   ValidateRequestMiddleWare(AuthValidations.refreshTokenValidationSchema),
   AuthControllers.refreshToken,
