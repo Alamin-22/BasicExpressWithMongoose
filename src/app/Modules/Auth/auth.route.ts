@@ -33,7 +33,7 @@ router.post(
 router.post(
   '/reset_password',
   ValidateRequestMiddleWare(AuthValidations.resetPasswordValidationSchema),
-  AuthControllers.forgetPassword,
+  AuthControllers.restPassword,
 );
 
 router.post(

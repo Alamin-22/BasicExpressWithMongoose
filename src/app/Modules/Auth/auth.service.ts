@@ -122,6 +122,7 @@ const changePassword = async (
 
   return { passwordChangedAt: new Date() };
 };
+
 const forgetPassword = async (userId: string) => {
   // checking if the user is exist
   const user = await UserModel.isUserExistByCustomId(userId);
@@ -159,8 +160,58 @@ const forgetPassword = async (userId: string) => {
   );
 
   const resetUiLink = `${config.reset_pass_ui_Link}?id=${user.id}&token=${resetToken}`;
+
+  console.log({ resetUiLink });
   // calling Email Sending Function
   sendEmail(user.email, resetUiLink);
+
+  return null;
+};
+
+const resetPassword = async (
+  payload: { id: string; newPassword: string },
+  token,
+) => {
+  // checking if the user is exist
+  const user = await UserModel.isUserExistByCustomId(payload?.id);
+
+  if (!user) {
+    throw new AppError(httpStatus.NOT_FOUND, 'This user is not found !');
+  }
+  // checking if the user is already deleted
+
+  const isDeleted = user?.isDeleted;
+
+  if (isDeleted) {
+    throw new AppError(httpStatus.FORBIDDEN, 'This user is deleted !');
+  }
+
+  // checking if the user is blocked
+
+  const userStatus = user?.status;
+
+  if (userStatus === 'blocked') {
+    throw new AppError(httpStatus.FORBIDDEN, 'This user is blocked ! !');
+  }
+
+  // hashed the new password before saving to the DB
+
+  const newHashedPassword = await bcrypt.hash(
+    payload.newPassword,
+    Number(config.bcrypt_salt_rounds),
+  );
+
+  await UserModel.findOneAndUpdate(
+    {
+      id: userData.userId,
+      role: userData.role,
+    },
+    {
+      password: newHashedPassword,
+      needsPasswordChange: false,
+      passwordChangedAt: new Date(),
+    },
+  );
 
   return { passwordChangedAt: new Date() };
 };
@@ -228,6 +279,7 @@ const refreshToken = async (token: string) => {
 export const AuthServices = {
   loginUser,
   changePassword,
+  resetPassword,
   forgetPassword,
   refreshToken,
 };
