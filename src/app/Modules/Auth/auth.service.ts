@@ -170,7 +170,7 @@ const forgetPassword = async (userId: string) => {
 
 const resetPassword = async (
   payload: { id: string; newPassword: string },
-  token,
+  token: string,
 ) => {
   // checking if the user is exist
   const user = await UserModel.isUserExistByCustomId(payload?.id);
@@ -194,8 +194,19 @@ const resetPassword = async (
     throw new AppError(httpStatus.FORBIDDEN, 'This user is blocked ! !');
   }
 
-  // hashed the new password before saving to the DB
+  // checking if the given token is valid
+  const decoded = jwt.verify(
+    token,
+    config.access_secret as string,
+  ) as JwtPayload;
 
+  const { userId, role } = decoded;
+
+  if (payload?.id !== userId) {
+    throw new AppError(httpStatus.FORBIDDEN, 'Your are Forbidden');
+  }
+
+  // hashed the new password before saving to the DB
   const newHashedPassword = await bcrypt.hash(
     payload.newPassword,
     Number(config.bcrypt_salt_rounds),
@@ -203,8 +214,8 @@ const resetPassword = async (
 
   await UserModel.findOneAndUpdate(
     {
-      id: userData.userId,
-      role: userData.role,
+      id: userId,
+      role: role,
     },
     {
       password: newHashedPassword,
@@ -225,8 +236,6 @@ const refreshToken = async (token: string) => {
     token,
     config.refresh_secret as string,
   ) as JwtPayload;
-
-  console.log('This is coming from the refresh Token API', decoded);
 
   const { userId, iat } = decoded;
 
