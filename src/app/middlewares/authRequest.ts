@@ -24,8 +24,6 @@ const AuthValidationMiddleWare = (...requiredRoles: TUserRole[]) => {
 
     const { role, userId, iat } = decoded;
 
-    console.log('This is coming from the line no 27', decoded);
-
     // checking if the user is exist
     const user = await UserModel.isUserExistByCustomId(userId);
 
