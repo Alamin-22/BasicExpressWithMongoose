@@ -6,6 +6,7 @@ import { FacultyValidations } from '../FacultyMember/facultyMember.validation';
 import { AdminValidations } from '../AdminMember/adminMember.validation';
 import AuthValidationMiddleWare from '../../middlewares/authRequest';
 import { USER_ROLE } from './user.constant';
+import { upload } from '../../utils/sendImgToCloudinary';
 
 const router = express.Router();
 
@@ -14,7 +15,8 @@ const router = express.Router();
 router.post(
   '/create_student',
   AuthValidationMiddleWare(USER_ROLE.admin),
-  ValidateHRequestMiddleWare(StudentValidations.createStudentValidationSchema),
+  upload.single('file'),
+  // ValidateHRequestMiddleWare(StudentValidations.createStudentValidationSchema),
   userControllers.createStudent,
 );
 
@@ -23,6 +25,7 @@ router.post(
   ValidateHRequestMiddleWare(FacultyValidations.createFacultyValidationSchema),
   userControllers.createFaculty,
 );
+
 router.post(
   '/create_admin',
   ValidateHRequestMiddleWare(AdminValidations.createAdminValidationSchema),
