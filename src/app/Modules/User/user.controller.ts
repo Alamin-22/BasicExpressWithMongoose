@@ -3,7 +3,6 @@ import { UserServices } from './user.service';
 import sendResponse from '../../utils/sendResponse';
 import httpStatus from 'http-status';
 import catchAsync from '../../utils/catchAsync';
-import AppError from '../../errors/AppError';
 
 const createStudent: RequestHandler = catchAsync(async (req, res) => {
   const { password, student: studentData } = req.body;
@@ -48,18 +47,16 @@ const createAdmin = catchAsync(async (req, res) => {
 });
 
 const getMe = catchAsync(async (req, res) => {
-  const token = req.headers.authorization;
+  const verifiedUser = req.user; // because I have already verify the token and assign it to the user from Auth Middleware
 
-  if (!token) {
-    throw new AppError(httpStatus.NOT_FOUND, 'Token Not Found');
-  }
+  const { userId, role } = verifiedUser;
 
-  const result = await UserServices.getMe(token);
+  const result = await UserServices.getMe(userId, role);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'Get Me Route working successfully ',
+    message: 'User is Retrieve successfully ',
     data: result,
   });
 });
