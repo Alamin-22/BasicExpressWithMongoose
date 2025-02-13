@@ -183,14 +183,26 @@ const getMe = async (token: string) => {
 
   let result = null;
 
-  if (role === 'student') {
-    result = await Student.findOne({ id: userId });
-  }
-  if (role === 'admin') {
-    result = await AdminModel.findOne({ id: userId });
-  }
-  if (role === 'faculty') {
-    result = await FacultyModel.findOne({ id: userId });
+  switch (role) {
+    case 'student':
+      result = await Student.findOne({ id: userId })
+        .populate('admissionSemester')
+        .populate({
+          path: 'academicDepartment',
+          populate: {
+            path: 'academicFaculty',
+          },
+        });
+      break;
+    case 'admin':
+      result = await AdminModel.findOne({ id: userId });
+      break;
+    case 'faculty':
+      result = await FacultyModel.findOne({ id: userId });
+      break;
+    default:
+      result = null; // Handle unknown roles if necessary
+      break;
   }
 
   return result;
