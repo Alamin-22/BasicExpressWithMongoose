@@ -16,9 +16,14 @@ import { TFaculty } from '../FacultyMember/facultyMember.interface';
 import { academicDepartmentModel } from '../academicDepartment/academicDepartment.model';
 import { FacultyModel } from '../FacultyMember/facultyMember.model';
 import { AdminModel } from '../AdminMember/adminMember.model';
-import { VerifyToken } from '../Auth/auth.utils';
+import { sendImageToCloudinary } from '../../utils/sendImgToCloudinary';
 
-const createStudentIntoDB = async (password: string, payload: TStudentType) => {
+const createStudentIntoDB = async (
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  file: any,
+  password: string,
+  payload: TStudentType,
+) => {
   const userData: Partial<TUser> = {};
   // use Default password if pass is not provided
 
@@ -40,6 +45,12 @@ const createStudentIntoDB = async (password: string, payload: TStudentType) => {
     // Auto generated Id
     userData.id = await generateStudentId(admissionSemesterId!);
 
+    // sending image to cloudinary
+
+    const imageName = `${userData.id}${payload?.name?.firstName}`;
+    const path = file?.path;
+    const uploadedImage = await sendImageToCloudinary(imageName, path);
+
     // create a user (transition 1)
     const newUser = await UserModel.create([userData], { session }); /// => using transaction
 
@@ -49,6 +60,7 @@ const createStudentIntoDB = async (password: string, payload: TStudentType) => {
 
     payload.id = newUser[0].id;
     payload.user = newUser[0]._id; //reference _id
+    payload.profileImg = uploadedImage.secure_url;
 
     // create a student (transition 2)
     const newStudent = await Student.create([payload], { session });
@@ -176,11 +188,7 @@ const createAdminIntoDB = async (password: string, payload: TFaculty) => {
   }
 };
 
-const getMe = async (token: string) => {
-  const decoded = VerifyToken(token, config.access_secret as string);
-
-  const { userId, role } = decoded;
-
+const getMe = async (userId: string, role: string) => {
   let result = null;
 
   switch (role) {
@@ -208,9 +216,21 @@ const getMe = async (token: string) => {
   return result;
 };
 
+const changeUserStatus = async (
+  userId: string,
+  payload: { status: string },
+) => {
+  const result = await UserModel.findByIdAndUpdate(userId, payload, {
+    new: true,
+  });
+
+  return result;
+};
+
 export const UserServices = {
   createStudentIntoDB,
   createFacultyIntoDB,
   createAdminIntoDB,
+  changeUserStatus,
   getMe,
 };

@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { BloodGroup, Gender } from './adminMember.constant';
+import { USER_STATUS } from '../User/user.constant';
 
 const createUserNameValidationSchema = z.object({
   firstName: z.string().min(1).max(20),
@@ -50,7 +51,14 @@ export const updateAdminValidationSchema = z.object({
   }),
 });
 
+const changeStatusValidationSchema = z.object({
+  body: z.object({
+    status: z.enum([...USER_STATUS] as [string, ...string[]]),
+  }),
+});
+
 export const AdminValidations = {
   createAdminValidationSchema,
+  changeStatusValidationSchema,
   updateAdminValidationSchema,
 };
