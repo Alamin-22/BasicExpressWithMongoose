@@ -1,8 +1,11 @@
-import { v2 as cloudinary } from 'cloudinary';
+import { v2 as cloudinary, UploadApiResponse } from 'cloudinary';
 import config from '../config';
 import multer from 'multer';
 
-export const sendImageToCloudinary = async () => {
+export const sendImageToCloudinary = async (
+  imageName: string,
+  path: string,
+): Promise<UploadApiResponse> => {
   // Configuration
   cloudinary.config({
     cloud_name: config.cloudinary_cloud_name,
@@ -10,24 +13,17 @@ export const sendImageToCloudinary = async () => {
     api_secret: config.cloudinary_api_access_secret,
   });
 
-  // Upload an image
-  const uploadResult = await cloudinary.uploader
-    .upload(config.cloudinary_upload_url as string, {
-      public_id: 'shoes',
-    })
-    .catch((error) => {
-      console.log(error);
+  try {
+    // Upload an image
+    const uploadResult = await cloudinary.uploader.upload(path, {
+      public_id: imageName,
     });
 
-  console.log(uploadResult);
-
-  // Optimize delivery by resizing and applying auto-format and auto-quality
-  const optimizeUrl = cloudinary.url('shoes', {
-    fetch_format: 'auto',
-    quality: 'auto',
-  });
-
-  console.log(optimizeUrl);
+    return uploadResult; // Ensure a valid response is always returned
+  } catch (error) {
+    console.error('Cloudinary Upload Error:', error);
+    throw new Error('Failed to upload image to Cloudinary');
+  }
 };
 
 const storage = multer.diskStorage({

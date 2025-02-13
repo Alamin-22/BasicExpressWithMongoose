@@ -7,13 +7,12 @@ import catchAsync from '../../utils/catchAsync';
 const createStudent: RequestHandler = catchAsync(async (req, res) => {
   const { password, student: studentData } = req.body;
 
-  console.log('this is coming form line no 10', req.file);
-  console.log('this is coming form line no 10', req.body);
-
-  const result = null;
   // will be calling services  functions to send this data
-  // const result = await StudentServices.createStudentIntoDB(studentData); // => passing validate value into the func
-  // const result = await UserServices.createStudentIntoDB(password, studentData); // => passing validate value into the func
+  const result = await UserServices.createStudentIntoDB(
+    req.file,
+    password,
+    studentData,
+  ); // => passing validate value into the func
 
   // passing the response to the Reusable func
   sendResponse(res, {

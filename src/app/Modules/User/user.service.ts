@@ -18,7 +18,12 @@ import { FacultyModel } from '../FacultyMember/facultyMember.model';
 import { AdminModel } from '../AdminMember/adminMember.model';
 import { sendImageToCloudinary } from '../../utils/sendImgToCloudinary';
 
-const createStudentIntoDB = async (password: string, payload: TStudentType) => {
+const createStudentIntoDB = async (
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  file: any,
+  password: string,
+  payload: TStudentType,
+) => {
   const userData: Partial<TUser> = {};
   // use Default password if pass is not provided
 
@@ -42,7 +47,9 @@ const createStudentIntoDB = async (password: string, payload: TStudentType) => {
 
     // sending image to cloudinary
 
-    sendImageToCloudinary()
+    const imageName = `${userData.id}${payload?.name?.firstName}`;
+    const path = file?.path;
+    const uploadedImage = await sendImageToCloudinary(imageName, path);
 
     // create a user (transition 1)
     const newUser = await UserModel.create([userData], { session }); /// => using transaction
@@ -53,6 +60,7 @@ const createStudentIntoDB = async (password: string, payload: TStudentType) => {
 
     payload.id = newUser[0].id;
     payload.user = newUser[0]._id; //reference _id
+    payload.profileImg = uploadedImage.secure_url;
 
     // create a student (transition 2)
     const newStudent = await Student.create([payload], { session });
