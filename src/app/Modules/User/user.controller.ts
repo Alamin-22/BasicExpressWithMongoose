@@ -54,17 +54,12 @@ const getMe = catchAsync(async (req, res) => {
     throw new AppError(httpStatus.NOT_FOUND, 'Token Not Found');
   }
 
-  
-
-
-
-
-  const result = await UserServices.getMe(id, role);
+  const result = await UserServices.getMe(token);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'Admin is created successfully',
+    message: 'Get Me Route working successfully ',
     data: result,
   });
 });

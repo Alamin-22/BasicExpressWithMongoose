@@ -36,7 +36,7 @@ router.get(
     USER_ROLE.faculty,
     USER_ROLE.student,
   ),
-  userControllers.createAdmin,
+  userControllers.getMe,
 );
 
 export const userRoutes = router;
