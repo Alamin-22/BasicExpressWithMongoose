@@ -2,8 +2,8 @@ import express from 'express';
 import { userControllers } from './user.controller';
 import { StudentValidations } from '../Students/student.validation';
 import ValidateHRequestMiddleWare from '../../middlewares/validateRequest';
-import { createFacultyValidationSchema } from '../FacultyMember/facultyMember.validation';
-import { createAdminValidationSchema } from '../AdminMember/adminMember.validation';
+import { FacultyValidations } from '../FacultyMember/facultyMember.validation';
+import { AdminValidations } from '../AdminMember/adminMember.validation';
 import AuthValidationMiddleWare from '../../middlewares/authRequest';
 import { USER_ROLE } from './user.constant';
 
@@ -20,13 +20,20 @@ router.post(
 
 router.post(
   '/create_faculty',
-  ValidateHRequestMiddleWare(createFacultyValidationSchema),
+  ValidateHRequestMiddleWare(FacultyValidations.createFacultyValidationSchema),
   userControllers.createFaculty,
 );
 router.post(
   '/create_admin',
-  ValidateHRequestMiddleWare(createAdminValidationSchema),
+  ValidateHRequestMiddleWare(AdminValidations.createAdminValidationSchema),
   userControllers.createAdmin,
+);
+
+router.post(
+  '/change_status/:id',
+  AuthValidationMiddleWare(USER_ROLE.admin),
+  ValidateHRequestMiddleWare(AdminValidations.changeStatusValidationSchema),
+  userControllers.changeStatus,
 );
 
 router.get(
