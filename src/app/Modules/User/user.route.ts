@@ -29,4 +29,14 @@ router.post(
   userControllers.createAdmin,
 );
 
+router.get(
+  '/get_me',
+  AuthValidationMiddleWare(
+    USER_ROLE.admin,
+    USER_ROLE.faculty,
+    USER_ROLE.student,
+  ),
+  userControllers.createAdmin,
+);
+
 export const userRoutes = router;
