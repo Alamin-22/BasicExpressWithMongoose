@@ -8,7 +8,7 @@ import { USER_ROLE } from '../User/user.constant';
 const router = express.Router();
 
 router.post(
-  '/create-enrolled-course',
+  '/create_enrolled_course',
   AuthValidationMiddleWare(USER_ROLE.student),
   validateRequest(
     EnrolledCourseValidations.createEnrolledCourseValidationZodSchema,
