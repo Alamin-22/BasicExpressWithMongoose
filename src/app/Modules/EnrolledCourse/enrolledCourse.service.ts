@@ -5,6 +5,7 @@ import { OfferedCourseModel } from '../OfferedCourse/OfferedCourse.model';
 import { TEnrolledCourse } from './enrolledCourse.interface';
 import EnrolledCourseModel from './enrolledCourse.model';
 import { Student } from '../Students/student.model';
+import mongoose from 'mongoose';
 
 const createEnrolledCourseIntoDB = async (
   userId: string,
@@ -35,7 +36,7 @@ const createEnrolledCourseIntoDB = async (
     );
   }
 
-  const student = await Student.findOne({ _id: userId }).select('id');
+  const student = await Student.findOne({ id: userId }).select('id');
 
   if (!student) {
     throw new AppError(httpStatus.NOT_FOUND, 'Student Not Found!');
@@ -44,14 +45,56 @@ const createEnrolledCourseIntoDB = async (
   const isStudentAlreadyEnrolled = await EnrolledCourseModel.findOne({
     semesterRegistration: isOfferedCourseExist.semesterRegistration,
     offeredCourse,
-    student: student?.id,
+    student: student?._id,
   });
 
   if (isStudentAlreadyEnrolled) {
     throw new AppError(httpStatus.CONFLICT, 'This student already enrolled');
   }
 
-  return null;
+  const session = await mongoose.startSession();
+
+  try {
+    session.startTransaction();
+    const result = await EnrolledCourseModel.create(
+      [
+        {
+          semesterRegistration: isOfferedCourseExist.semesterRegistration,
+          academicSemester: isOfferedCourseExist.academicSemester,
+          academicFaculty: isOfferedCourseExist.academicFaculty,
+          academicDepartment: isOfferedCourseExist.academicDepartment,
+          offeredCourse: offeredCourse,
+          course: isOfferedCourseExist.course,
+          faculty: isOfferedCourseExist.faculty,
+          student: student._id,
+          isEnrolled: true,
+        },
+      ],
+      { session },
+    );
+
+    if (!result) {
+      throw new AppError(
+        httpStatus.BAD_REQUEST,
+        'Failed to Enroll in this course',
+      );
+    }
+
+    const maxCapacity = isOfferedCourseExist.maxCapacity;
+
+    await OfferedCourseModel.findByIdAndUpdate(offeredCourse, {
+      maxCapacity: maxCapacity - 1,
+    });
+
+    await session.commitTransaction();
+    await session.endSession();
+
+    return result;
+  } catch (error: any) {
+    await session.commitTransaction();
+    await session.endSession();
+    throw new Error(error);
+  }
 };
 
 const updateEnrolledCourseMarksIntoDB = async (
