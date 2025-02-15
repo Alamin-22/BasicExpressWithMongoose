@@ -9,6 +9,7 @@ import mongoose from 'mongoose';
 import { SemesterRegistrationModel } from '../SemesterRegistration/SemesterRegistration.model';
 import { CourseModel } from '../Course/course.model';
 import { FacultyModel } from '../FacultyMember/facultyMember.model';
+import { calculateGradeAndPoints } from './enrolledCourse.utils';
 
 const createEnrolledCourseIntoDB = async (
   userId: string,
@@ -175,6 +176,7 @@ const updateEnrolledCourseMarksIntoDB = async (
   if (!isOfferedCourseExists) {
     throw new AppError(httpStatus.NOT_FOUND, 'Offered course not found !');
   }
+
   const isStudentExists = await Student.findById(student);
 
   if (!isStudentExists) {
