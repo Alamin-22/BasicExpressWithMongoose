@@ -2,6 +2,7 @@ import mongoose from 'mongoose';
 import app from './app';
 import config from './app/config';
 import { Server } from 'http';
+import seedSupperAdmin from './app/DB';
 
 let server: Server;
 
@@ -16,7 +17,7 @@ async function main() {
     // Connect to the database
     await mongoose.connect(config.dataBaseUrl as string);
     console.log('✅ Connected to the database successfully');
-
+    seedSupperAdmin();
     // Start the server and assign it to `server`
     server = app.listen(config.port, () => {
       console.log(`🚀 Server is running on port ${config.port}`);

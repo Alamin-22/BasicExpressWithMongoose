@@ -31,7 +31,7 @@ const userSchema = new Schema<TUser, TUserModel>(
     },
     role: {
       type: String,
-      enum: ['admin', 'student', 'faculty'], // Use enum for strict type adherence
+      enum: ['admin', 'student', 'faculty', 'supper_admin'], // Use enum for strict type adherence
       required: true,
     },
     status: {
