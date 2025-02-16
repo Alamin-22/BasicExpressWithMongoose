@@ -7,14 +7,14 @@ const SupperUser = {
   email: 'mollik@admin.com',
   password: config.supper_admin_password,
   needsPasswordChange: false,
-  role: USER_ROLE.supperAdmin,
+  role: USER_ROLE.supper_admin,
   status: 'in-progress',
   isDeleted: false,
 };
 
 const seedSupperAdmin = async () => {
   const isSupperAdminExists = await UserModel.findOne({
-    role: USER_ROLE.supperAdmin,
+    role: USER_ROLE.supper_admin,
   });
 
   if (!isSupperAdminExists) {
