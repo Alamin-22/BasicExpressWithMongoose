@@ -4,10 +4,9 @@ import { UserModel } from '../Modules/User/user.model';
 
 const SupperUser = {
   id: '0001',
-  email: 'mollik@Admin.com',
+  email: 'mollik@admin.com',
   password: config.supper_admin_password,
   needsPasswordChange: false,
-  passwordChangedAt: Date,
   role: USER_ROLE.supperAdmin,
   status: 'in-progress',
   isDeleted: false,
