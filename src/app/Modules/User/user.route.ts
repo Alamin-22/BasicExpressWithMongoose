@@ -16,7 +16,7 @@ router.post(
   '/create_student',
   AuthValidationMiddleWare(USER_ROLE.admin, USER_ROLE.supper_admin),
   upload.single('file'),
-
+  // function to handle image upload
   (req: Request, res: Response, next: NextFunction) => {
     req.body = JSON.parse(req.body.data);
     next();
@@ -27,12 +27,26 @@ router.post(
 
 router.post(
   '/create_faculty',
+  AuthValidationMiddleWare(USER_ROLE.admin, USER_ROLE.supper_admin),
+  upload.single('file'),
+  // function to handle image upload
+  (req: Request, res: Response, next: NextFunction) => {
+    req.body = JSON.parse(req.body.data);
+    next();
+  },
   ValidateHRequestMiddleWare(FacultyValidations.createFacultyValidationSchema),
   userControllers.createFaculty,
 );
 
 router.post(
   '/create_admin',
+  AuthValidationMiddleWare(USER_ROLE.admin, USER_ROLE.supper_admin),
+  upload.single('file'),
+  // function to handle image upload
+  (req: Request, res: Response, next: NextFunction) => {
+    req.body = JSON.parse(req.body.data);
+    next();
+  },
   ValidateHRequestMiddleWare(AdminValidations.createAdminValidationSchema),
   userControllers.createAdmin,
 );
