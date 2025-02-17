@@ -14,7 +14,7 @@ const router = express.Router();
 
 router.post(
   '/create_student',
-  AuthValidationMiddleWare(USER_ROLE.admin),
+  AuthValidationMiddleWare(USER_ROLE.admin, USER_ROLE.supper_admin),
   upload.single('file'),
 
   (req: Request, res: Response, next: NextFunction) => {

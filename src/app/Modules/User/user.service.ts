@@ -33,17 +33,32 @@ const createStudentIntoDB = async (
   userData.role = 'student';
   userData.email = payload?.email;
 
+  // find academic Department Info
+  const academicDepartmentInfo = await academicDepartmentModel.findById(
+    payload.academicDepartment,
+  );
+
+  if (!academicDepartmentInfo) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Academic Department not Found!!');
+  }
+
+  payload.academicFaculty = academicDepartmentInfo.academicFaculty;
+
   // find academicSemester Info
-  const admissionSemesterId = await AcademicSemesterModel.findById(
+  const admissionSemesterInfo = await AcademicSemesterModel.findById(
     payload.admissionSemester,
   );
+
+  if (!admissionSemesterInfo) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Admission semester not Found!!');
+  }
 
   const session = await mongoose.startSession();
 
   try {
     session.startTransaction();
     // Auto generated Id
-    userData.id = await generateStudentId(admissionSemesterId!);
+    userData.id = await generateStudentId(admissionSemesterInfo!);
 
     // sending image to cloudinary
 
