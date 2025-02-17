@@ -8,22 +8,37 @@ const router = express.Router();
 
 router.get(
   '/',
-  AuthValidationMiddleWare(USER_ROLE.admin, USER_ROLE.faculty),
+  AuthValidationMiddleWare(
+    USER_ROLE.admin,
+    USER_ROLE.faculty,
+    USER_ROLE.supper_admin,
+  ),
   studentControllers.getAllStudents,
 );
 
 router.get(
   '/:id',
-  AuthValidationMiddleWare(USER_ROLE.admin, USER_ROLE.faculty, USER_ROLE.student),
+  AuthValidationMiddleWare(
+    USER_ROLE.admin,
+    USER_ROLE.faculty,
+    USER_ROLE.student,
+    USER_ROLE.supper_admin,
+  ),
   studentControllers.getSingleStudent,
 );
-// to delete student
+// update
 router.patch(
   '/:id',
+  AuthValidationMiddleWare(USER_ROLE.student, USER_ROLE.supper_admin),
   ValidateRequestMiddleWare(StudentValidations.updateStudentValidationSchema),
   studentControllers.updateStudent,
 );
-// update
-router.delete('/:id', studentControllers.deleteStudent);
+
+// to delete student
+router.delete(
+  '/:id',
+  AuthValidationMiddleWare(USER_ROLE.admin, USER_ROLE.supper_admin),
+  studentControllers.deleteStudent,
+);
 
 export const StudentRoutes = router;

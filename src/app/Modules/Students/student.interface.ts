@@ -55,26 +55,12 @@ export interface TStudentType {
   profileImg?: string;
   admissionSemester: Types.ObjectId;
   academicDepartment: Types.ObjectId;
+  academicFaculty: Types.ObjectId;
   isDeleted: boolean;
 }
-
-// 2. Create a Schema corresponding to the document interface.
-
-// for creating Static instance
 
 export interface StudentModel extends Model<TStudentType> {
   // eslint-disable-next-line no-unused-vars
   isUserExists(id: string): Promise<TStudentType | null>;
 }
 
-// for creating Instance
-// export type StudentMethods = {
-//
-//   isUserExists(id: string): Promise<TStudentType | null>;
-// };
-
-// export type StudentModel = Model<
-//   TStudentType,
-//   Record<string, never>,
-//   StudentMethods
-// >;
