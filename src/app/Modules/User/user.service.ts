@@ -116,13 +116,15 @@ const createFacultyIntoDB = async (
   userData.email = payload?.email;
 
   // find academic department info
-  const academicDepartment = await academicDepartmentModel.findById(
+  const academicDepartmentInfo = await academicDepartmentModel.findById(
     payload.academicDepartment,
   );
 
-  if (!academicDepartment) {
+  if (!academicDepartmentInfo) {
     throw new AppError(400, 'Academic department not found');
   }
+
+  payload.academicFaculty = academicDepartmentInfo?.academicFaculty;
 
   const session = await mongoose.startSession();
 
