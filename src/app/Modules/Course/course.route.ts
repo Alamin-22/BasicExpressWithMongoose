@@ -9,7 +9,7 @@ const router = express.Router();
 
 router.post(
   '/create_course',
-  AuthValidationMiddleWare(USER_ROLE.admin),
+  AuthValidationMiddleWare(USER_ROLE.admin, USER_ROLE.supper_admin),
   validateRequest(CourseValidations.createCourseValidationSchema),
   CourseControllers.createCourse,
 );
@@ -26,27 +26,27 @@ router.get(
 
 router.patch(
   '/:id',
-  AuthValidationMiddleWare(USER_ROLE.admin),
+  AuthValidationMiddleWare(USER_ROLE.admin, USER_ROLE.supper_admin),
   validateRequest(CourseValidations.updateCourseValidationSchema),
   CourseControllers.updateCourse,
 );
 
 router.delete(
   '/:id',
-  AuthValidationMiddleWare(USER_ROLE.admin),
+  AuthValidationMiddleWare(USER_ROLE.admin, USER_ROLE.supper_admin),
   CourseControllers.deleteCourse,
 );
 
 router.put(
   '/:courseId/assign_faculties',
-  AuthValidationMiddleWare(USER_ROLE.admin),
+  AuthValidationMiddleWare(USER_ROLE.admin, USER_ROLE.supper_admin),
   validateRequest(CourseValidations.facultiesWithCourseValidationSchema),
   CourseControllers.assignFacultiesWithCourse,
 );
 
 router.delete(
   '/:courseId/remove_faculties',
-  AuthValidationMiddleWare(USER_ROLE.admin),
+  AuthValidationMiddleWare(USER_ROLE.admin, USER_ROLE.supper_admin),
   validateRequest(CourseValidations.facultiesWithCourseValidationSchema),
   CourseControllers.removeFacultiesFromCourse,
 );
