@@ -18,7 +18,11 @@ router.post(
 
 router.patch(
   '/update_enrolled_course_marks',
-  AuthValidationMiddleWare(USER_ROLE.faculty),
+  AuthValidationMiddleWare(
+    USER_ROLE.admin,
+    USER_ROLE.supper_admin,
+    USER_ROLE.faculty,
+  ),
   validateRequest(
     EnrolledCourseValidations.updateEnrolledCourseMarksValidationZodSchema,
   ),
