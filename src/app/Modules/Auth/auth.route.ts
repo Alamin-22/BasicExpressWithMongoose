@@ -19,6 +19,7 @@ router.post(
     USER_ROLE.admin,
     USER_ROLE.faculty,
     USER_ROLE.student,
+    USER_ROLE.supper_admin,
   ),
   ValidateRequestMiddleWare(AuthValidations.changePasswordValidationSchema),
   AuthControllers.changePassword,
