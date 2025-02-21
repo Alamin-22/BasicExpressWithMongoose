@@ -161,6 +161,7 @@ const getMyOfferedCoursesFromDB = async (
   const page = Number(query?.page) || 1;
   const limit = Number(query?.limit) || 10;
   const skip = (page - 1) * limit;
+  console.log(skip);
 
   const studentInfo = await Student.findOne({ id: userId });
   // find the student
@@ -233,18 +234,27 @@ const getMyOfferedCoursesFromDB = async (
         as: 'enrolledCourses',
       },
     },
-    // {
-    //   $addFields: {
-    //     $in: [
-    //       'course._id',
-    //       {
-    //         $map: {
-    //           input: '$enrolledCourses',
-    //         },
-    //       },
-    //     ],
-    //   },
-    // },
+    {
+      $addFields: {
+        isAlreadyEnrolled: {
+          $in: [
+            '$course._id',
+            {
+              $map: {
+                input: '$enrolledCourses',
+                as: 'enroll',
+                in: '$$enroll.course',
+              },
+            },
+          ],
+        },
+      },
+    },
+    {
+      $match: {
+        isAlreadyEnrolled: false,
+      },
+    },
   ]);
 
   return result;

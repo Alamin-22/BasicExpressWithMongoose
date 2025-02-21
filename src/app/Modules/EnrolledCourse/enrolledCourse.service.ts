@@ -176,7 +176,6 @@ const updateEnrolledCourseMarksIntoDB = async (
   if (!isOfferedCourseExists) {
     throw new AppError(httpStatus.NOT_FOUND, 'Offered course not found !');
   }
-
   const isStudentExists = await Student.findById(student);
 
   if (!isStudentExists) {
@@ -203,16 +202,16 @@ const updateEnrolledCourseMarksIntoDB = async (
   const modifiedData: Record<string, unknown> = {
     ...courseMarks,
   };
-
+  console.log(courseMarks);
   if (courseMarks?.finalTerm) {
     const { classTest1, classTest2, midTerm, finalTerm } =
       isCourseBelongToFaculty.courseMarks;
 
     const totalMarks =
-      Math.ceil(classTest1 * 0.1) +
-      Math.ceil(midTerm * 0.3) +
-      Math.ceil(classTest2 * 0.1) +
-      Math.ceil(finalTerm * 0.5);
+      Math.ceil(classTest1) +
+      Math.ceil(midTerm) +
+      Math.ceil(classTest2) +
+      Math.ceil(finalTerm);
 
     const result = calculateGradeAndPoints(totalMarks);
 

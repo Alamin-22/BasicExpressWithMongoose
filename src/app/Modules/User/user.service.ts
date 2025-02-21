@@ -110,6 +110,7 @@ const createFacultyIntoDB = async (
 
   //if password is not given , use default password
   userData.password = password || (config.default_password as string);
+  console.log({ userData });
 
   //set student role
   userData.role = 'faculty';
