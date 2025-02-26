@@ -166,9 +166,12 @@ const getMyEnrolledCoursesFromDB = async (
   }
 
   const enrolledCourseQuery = new QueryBuilder(
-    EnrolledCourseModel.find({ student: student._id }).populate(
+    EnrolledCourseModel.find({ student: student._id }),
+    /* 
+    .populate(
       'semesterRegistration academicSemester academicFaculty academicDepartment offeredCourse course student faculty',
-    ),
+    )
+    */
     query,
   )
     .filter()
