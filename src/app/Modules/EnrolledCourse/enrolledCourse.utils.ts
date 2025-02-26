@@ -3,7 +3,7 @@ export const calculateGradeAndPoints = (totalMarks: number) => {
     grade: 'NA',
     gradePoints: 0,
   };
-
+  console.log({ totalMarks });
   /**
    * 0-19 F
    * 20-39 D

@@ -9,6 +9,7 @@ export type TEnrolledCourseMarks = {
   finalTerm: number;
 };
 
+
 export type TEnrolledCourse = {
   semesterRegistration: Types.ObjectId;
   academicSemester: Types.ObjectId;
